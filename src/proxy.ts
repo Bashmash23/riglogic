@@ -7,6 +7,8 @@ const isPublicRoute = createRouteMatcher([
   "/s/(.*)", // public shared kit view (M3)
   "/api/share/(.*)", // public share-link read API
   "/api/waitlist", // public waitlist capture
+  "/api/catalog", // public merged catalog (placeholder + scraped)
+  "/api/cron/(.*)", // cron hits; protected by its own Bearer secret
 ]);
 
 export default clerkMiddleware(async (auth, req) => {
