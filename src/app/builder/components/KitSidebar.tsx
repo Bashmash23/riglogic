@@ -1,11 +1,11 @@
 "use client";
 
-import { useState } from "react";
 import { Copy, Minus, Plus, Trash2, Sparkles } from "lucide-react";
 import { useKit } from "@/lib/kitStore";
 import { getGear, getHouse } from "@/lib/catalog";
 import { computeRentalDays } from "@/lib/kitSnapshot";
 import type { KitLine } from "@/lib/types";
+import { GearImage } from "@/components/GearImage";
 import { DateRange } from "./DateRange";
 import { ProjectSwitcher } from "./ProjectSwitcher";
 
@@ -53,7 +53,12 @@ export function KitSidebar({ onStartWithCamera }: Props) {
         <DateRange />
       </div>
 
-      <div className="flex-1 overflow-y-auto">
+      {/* List takes its natural height (no flex-1) so the totals block
+          below sits immediately under the last line instead of being
+          pushed to the bottom of the panel. min-h-0 + overflow-y-auto
+          still make the list scroll internally if it gets long enough
+          to exceed the sidebar's bounded height on desktop. */}
+      <div className="min-h-0 overflow-y-auto">
         {isEmpty ? (
           <EmptyState onStartWithCamera={onStartWithCamera} />
         ) : (
@@ -63,11 +68,14 @@ export function KitSidebar({ onStartWithCamera }: Props) {
               return (
                 <li key={line.lineId} className="p-3">
                   <div className="flex items-start gap-2">
-                    <Thumbnail
-                      src={gear.imageUrl ?? null}
-                      alt={gear.name}
-                      category={gear.category}
-                    />
+                    <div className="h-10 w-10 shrink-0 overflow-hidden rounded border border-neutral-800">
+                      <GearImage
+                        src={gear.imageUrl}
+                        alt={gear.name}
+                        variant="thumb"
+                        padding="sm"
+                      />
+                    </div>
                     <div className="min-w-0 flex-1">
                       <div className="truncate text-sm font-medium text-neutral-100">
                         {gear.name}
@@ -129,9 +137,9 @@ export function KitSidebar({ onStartWithCamera }: Props) {
         )}
       </div>
 
-      {/* Totals — always visible at the bottom of the sidebar. Updates
-          live as items are added / removed / quantity-changed because
-          useKit() re-renders the whole sidebar on any kit mutation. */}
+      {/* Totals — sits directly under the line list. Updates live as
+          items are added / removed / quantity-changed because useKit()
+          re-renders the whole sidebar on any kit mutation. */}
       <div className="border-t border-neutral-800 bg-neutral-950 p-4">
         <div className="flex items-baseline justify-between">
           <span className="text-xs font-medium uppercase tracking-wider text-neutral-400">
@@ -159,51 +167,6 @@ export function KitSidebar({ onStartWithCamera }: Props) {
         </p>
       </div>
     </aside>
-  );
-}
-
-const THUMB_GRADIENTS: Record<string, string> = {
-  Cameras: "from-amber-900/60 to-orange-800/50",
-  Lenses: "from-sky-900/60 to-blue-800/50",
-  Lighting: "from-yellow-900/60 to-amber-700/50",
-  Grip: "from-neutral-800/80 to-neutral-700/60",
-  Audio: "from-purple-900/60 to-fuchsia-800/50",
-  Monitoring: "from-emerald-900/60 to-teal-800/50",
-  Power: "from-red-900/60 to-rose-800/50",
-  Media: "from-indigo-900/60 to-violet-800/50",
-  Accessories: "from-stone-800/80 to-zinc-700/60",
-};
-
-function Thumbnail({
-  src,
-  alt,
-  category,
-}: {
-  src: string | null;
-  alt: string;
-  category: string;
-}) {
-  const [failed, setFailed] = useState(false);
-  const gradient =
-    THUMB_GRADIENTS[category] ?? "from-neutral-800 to-neutral-700";
-  const showImage = !!src && !failed;
-  return (
-    <div
-      className={`relative h-10 w-10 shrink-0 overflow-hidden rounded border border-neutral-800 ${
-        showImage ? "bg-neutral-950" : `bg-gradient-to-br ${gradient}`
-      }`}
-    >
-      {showImage ? (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img
-          src={src ?? undefined}
-          alt={alt}
-          loading="lazy"
-          onError={() => setFailed(true)}
-          className="h-full w-full object-contain p-0.5"
-        />
-      ) : null}
-    </div>
   );
 }
 
