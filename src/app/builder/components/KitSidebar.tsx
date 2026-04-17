@@ -33,7 +33,10 @@ export function KitSidebar({ onStartWithCamera }: Props) {
   const isEmpty = linesWithGear.length === 0;
 
   return (
-    <aside className="flex w-full flex-col border-l border-neutral-800 bg-neutral-950 lg:w-[380px] lg:min-w-[380px]">
+    // lg:sticky + top-0 + h-screen pins the sidebar to the viewport on
+    // desktop, so the kit list (and totals pinned at the bottom) stay
+    // visible as you scroll through the gear grid.
+    <aside className="flex w-full flex-col border-l border-neutral-800 bg-neutral-950 lg:sticky lg:top-0 lg:h-screen lg:w-[380px] lg:min-w-[380px] lg:self-start">
       <div className="border-b border-neutral-800 p-4 space-y-3">
         <ProjectSwitcher />
         <div className="flex items-center justify-between text-xs text-neutral-500">

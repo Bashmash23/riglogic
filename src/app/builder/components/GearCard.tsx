@@ -32,7 +32,7 @@ export function GearCard({ item, house, onAdd }: Props) {
   return (
     <div className="group flex flex-col rounded-lg border border-neutral-800 bg-neutral-900/60 overflow-hidden hover:border-neutral-700 transition-colors">
       <div
-        className={`relative aspect-[4/3] ${
+        className={`relative aspect-[16/9] ${
           showImage
             ? "bg-neutral-950"
             : `bg-gradient-to-br ${gradient}`
@@ -47,7 +47,7 @@ export function GearCard({ item, house, onAdd }: Props) {
             alt={item.name}
             loading="lazy"
             onError={() => setImageFailed(true)}
-            className="h-full w-full object-contain p-3"
+            className="h-full w-full object-contain p-2"
           />
         ) : (
           <span className="text-xs font-medium tracking-wide text-neutral-300/70 uppercase">

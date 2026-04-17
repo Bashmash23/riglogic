@@ -1,19 +1,10 @@
-import Link from "next/link";
 import { CrewWaitlistForm } from "./CrewWaitlistForm";
+import { TopNav } from "@/components/TopNav";
 
 export default function CrewPage() {
   return (
     <div className="flex flex-1 flex-col">
-      <header className="flex items-center justify-between px-8 py-5 border-b border-neutral-800">
-        <Link href="/" className="flex items-center gap-2">
-          <span className="text-lg font-semibold tracking-tight">
-            Rig<span className="text-accent">Logic</span>
-          </span>
-        </Link>
-        <Link href="/" className="text-sm text-neutral-400 hover:text-neutral-100">
-          Back to RigLogic
-        </Link>
-      </header>
+      <TopNav />
 
       <main className="mx-auto flex w-full max-w-xl flex-1 flex-col items-center justify-center px-6 py-24 text-center">
         <span className="mb-4 rounded-full border border-neutral-800 bg-neutral-900 px-3 py-1 text-xs uppercase tracking-wider text-accent">

@@ -1,12 +1,11 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import Link from "next/link";
-import { UserButton } from "@clerk/nextjs";
 import { KitProvider, useKit } from "@/lib/kitStore";
 import { GEAR, HOUSES, getHouse, searchGear } from "@/lib/catalog";
 import { useScrapedGear } from "@/lib/useScrapedGear";
 import type { Category, GearItem } from "@/lib/types";
+import { TopNav } from "@/components/TopNav";
 import { SearchAndFilter } from "./components/SearchAndFilter";
 import { GearCard } from "./components/GearCard";
 import { KitSidebar } from "./components/KitSidebar";
@@ -60,17 +59,7 @@ function BuilderLayout() {
 
   return (
     <div className="flex min-h-screen flex-1 flex-col">
-      <header className="flex items-center justify-between border-b border-neutral-800 px-6 py-3">
-        <div className="flex items-center gap-6">
-          <Link href="/" className="text-base font-semibold tracking-tight">
-            Rig<span className="text-accent">Logic</span>
-          </Link>
-          <span className="hidden text-xs text-neutral-500 sm:inline">
-            Kit builder
-          </span>
-        </div>
-        <UserButton />
-      </header>
+      <TopNav />
 
       <div className="flex flex-1 flex-col lg:flex-row">
         <main className="flex flex-1 flex-col gap-4 p-6">

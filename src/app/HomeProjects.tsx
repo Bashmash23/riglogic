@@ -41,7 +41,10 @@ function HomeProjectsInner() {
   };
 
   return (
-    <section className="border-t border-neutral-800 bg-neutral-950/50 px-6 py-16">
+    <section
+      id="projects"
+      className="scroll-mt-20 border-t border-neutral-800 bg-neutral-950/50 px-6 py-16"
+    >
       <div className="mx-auto max-w-5xl">
         <div className="flex items-end justify-between">
           <div>

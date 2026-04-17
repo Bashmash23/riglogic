@@ -1,42 +1,13 @@
 import Link from "next/link";
-import { Show, SignInButton, UserButton } from "@clerk/nextjs";
+import { Show, SignInButton } from "@clerk/nextjs";
 import { Search, Sparkles, FileText, Link as LinkIcon } from "lucide-react";
 import { HomeProjects } from "./HomeProjects";
+import { TopNav } from "@/components/TopNav";
 
 export default function Home() {
   return (
     <div className="flex flex-1 flex-col">
-      <header className="flex items-center justify-between px-8 py-5 border-b border-neutral-800">
-        <Link href="/" className="flex items-center gap-2">
-          <span className="text-lg font-semibold tracking-tight">
-            Rig<span className="text-accent">Logic</span>
-          </span>
-        </Link>
-        <nav className="flex items-center gap-4 text-sm">
-          <Link
-            href="/crew"
-            className="text-neutral-400 hover:text-neutral-100"
-          >
-            Crew
-          </Link>
-          <Show when="signed-out">
-            <SignInButton mode="modal">
-              <button className="text-neutral-300 hover:text-neutral-100">
-                Sign in
-              </button>
-            </SignInButton>
-          </Show>
-          <Show when="signed-in">
-            <Link
-              href="/builder"
-              className="rounded-md bg-accent px-3 py-1.5 text-sm font-medium text-neutral-950 hover:bg-accent-soft transition-colors"
-            >
-              Open builder
-            </Link>
-            <UserButton />
-          </Show>
-        </nav>
-      </header>
+      <TopNav />
 
       {/* Hero */}
       <section className="flex flex-col items-center px-6 py-24 text-center">
