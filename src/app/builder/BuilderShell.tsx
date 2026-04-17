@@ -9,6 +9,7 @@ import type { Category, GearItem } from "@/lib/types";
 import { SearchAndFilter } from "./components/SearchAndFilter";
 import { GearCard } from "./components/GearCard";
 import { KitSidebar } from "./components/KitSidebar";
+import { ExportDialog } from "./components/ExportDialog";
 
 export function BuilderShell() {
   return (
@@ -22,6 +23,7 @@ function BuilderLayout() {
   const { addItem } = useKit();
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<Category | null>(null);
+  const [exportOpen, setExportOpen] = useState(false);
 
   const results: GearItem[] = useMemo(() => {
     let items: GearItem[] = GEAR;
@@ -74,8 +76,13 @@ function BuilderLayout() {
           )}
         </main>
 
-        <KitSidebar onStartWithCamera={() => setCategory("Cameras")} />
+        <KitSidebar
+          onStartWithCamera={() => setCategory("Cameras")}
+          onExportClick={() => setExportOpen(true)}
+        />
       </div>
+
+      <ExportDialog open={exportOpen} onClose={() => setExportOpen(false)} />
     </div>
   );
 }

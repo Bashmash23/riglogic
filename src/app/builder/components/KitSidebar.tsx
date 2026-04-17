@@ -7,9 +7,10 @@ import type { KitLine } from "@/lib/types";
 
 interface Props {
   onStartWithCamera?: () => void;
+  onExportClick?: () => void;
 }
 
-export function KitSidebar({ onStartWithCamera }: Props) {
+export function KitSidebar({ onStartWithCamera, onExportClick }: Props) {
   const { kit, setProjectName, removeLine, duplicateLine, setQuantity } =
     useKit();
 
@@ -134,8 +135,9 @@ export function KitSidebar({ onStartWithCamera }: Props) {
         <button
           type="button"
           disabled={isEmpty}
+          onClick={onExportClick}
           className="mt-3 w-full rounded-md bg-accent px-3 py-2 text-sm font-medium text-neutral-950 hover:bg-accent-soft disabled:cursor-not-allowed disabled:bg-neutral-800 disabled:text-neutral-500 transition-colors"
-          title={isEmpty ? "Add items before exporting" : "Export (M3)"}
+          title={isEmpty ? "Add items before exporting" : "Export kit"}
         >
           Export &amp; share
         </button>
