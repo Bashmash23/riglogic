@@ -1,0 +1,20 @@
+[
+  {
+    "id": "filmquip",
+    "name": "Filmquip",
+    "website": "https://www.filmquip.com",
+    "specialty": "General-purpose rental house — cameras, lenses, grip, lighting, audio"
+  },
+  {
+    "id": "arri-rental-dubai",
+    "name": "ARRI Rental Dubai",
+    "website": "https://www.arrirental.com/en/locations/dubai",
+    "specialty": "ARRI-focused camera systems, lighting, and accessories"
+  },
+  {
+    "id": "deep-focus",
+    "name": "Deep Focus",
+    "website": "https://deepfocus.ae",
+    "specialty": "Cinema lenses, zooms, and specialty optics"
+  }
+]

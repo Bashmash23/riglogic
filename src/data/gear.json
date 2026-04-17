@@ -1,0 +1,310 @@
+[
+  {
+    "id": "cam-alexa-mini-lf",
+    "name": "ARRI Alexa Mini LF",
+    "category": "Cameras",
+    "dayRateAED": 2500,
+    "rentalHouseId": "arri-rental-dubai",
+    "tags": ["arri", "alexa", "lf", "large format", "cinema camera", "primary"],
+    "isPrimary": true,
+    "blurb": "Large-format cinema workhorse. LPL mount, ProRes + ARRIRAW."
+  },
+  {
+    "id": "cam-alexa-35",
+    "name": "ARRI Alexa 35",
+    "category": "Cameras",
+    "dayRateAED": 3500,
+    "rentalHouseId": "arri-rental-dubai",
+    "tags": ["arri", "alexa", "35", "super 35", "cinema camera", "primary"],
+    "isPrimary": true,
+    "blurb": "Latest-gen S35 ARRI. 17 stops dynamic range, REVEAL color science."
+  },
+  {
+    "id": "cam-red-vraptor",
+    "name": "RED V-Raptor 8K VV",
+    "category": "Cameras",
+    "dayRateAED": 2500,
+    "rentalHouseId": "filmquip",
+    "tags": ["red", "vraptor", "raptor", "8k", "vv", "cinema camera", "primary"],
+    "isPrimary": true,
+    "blurb": "RED VV sensor, 8K at 120fps, global shutter-ish rolling performance."
+  },
+  {
+    "id": "cam-sony-venice-2",
+    "name": "Sony Venice 2",
+    "category": "Cameras",
+    "dayRateAED": 2800,
+    "rentalHouseId": "filmquip",
+    "tags": ["sony", "venice", "cinema camera", "primary"],
+    "isPrimary": true,
+    "blurb": "Dual-base ISO, 8.6K, Rialto extension available."
+  },
+  {
+    "id": "cam-sony-fx6",
+    "name": "Sony FX6",
+    "category": "Cameras",
+    "dayRateAED": 600,
+    "rentalHouseId": "filmquip",
+    "tags": ["sony", "fx6", "documentary", "run and gun"],
+    "isPrimary": true,
+    "blurb": "Full-frame documentary camera. S-Log3, dual base ISO."
+  },
+  {
+    "id": "cam-canon-c70",
+    "name": "Canon C70",
+    "category": "Cameras",
+    "dayRateAED": 400,
+    "rentalHouseId": "filmquip",
+    "tags": ["canon", "c70", "super 35", "documentary"],
+    "isPrimary": true,
+    "blurb": "Compact S35 cinema body. RF mount with EF adapter option."
+  },
+
+  {
+    "id": "lens-cooke-s7i",
+    "name": "Cooke S7/i Full Frame Plus — Set",
+    "category": "Lenses",
+    "dayRateAED": 1800,
+    "rentalHouseId": "deep-focus",
+    "tags": ["cooke", "s7i", "full frame", "pl mount", "prime set", "primary"],
+    "isPrimary": true,
+    "blurb": "Cooke Look on full-frame sensors. PL mount. 18/25/32/40/50/75/100/135mm."
+  },
+  {
+    "id": "lens-arri-signature",
+    "name": "ARRI Signature Prime — Set",
+    "category": "Lenses",
+    "dayRateAED": 2200,
+    "rentalHouseId": "deep-focus",
+    "tags": ["arri", "signature", "prime", "lpl", "full frame", "primary"],
+    "isPrimary": true,
+    "blurb": "Native LPL. Paired with Alexa Mini LF / Alexa 35."
+  },
+  {
+    "id": "lens-canon-sumire",
+    "name": "Canon Sumire Prime — Set",
+    "category": "Lenses",
+    "dayRateAED": 1500,
+    "rentalHouseId": "deep-focus",
+    "tags": ["canon", "sumire", "prime", "pl mount", "full frame"],
+    "isPrimary": false,
+    "blurb": "Warm rendering. PL mount. 20/24/35/50/85/135mm."
+  },
+  {
+    "id": "lens-angenieux-24-290",
+    "name": "Angenieux Optimo 24-290mm Zoom",
+    "category": "Lenses",
+    "dayRateAED": 1200,
+    "rentalHouseId": "deep-focus",
+    "tags": ["angenieux", "optimo", "zoom", "pl mount"],
+    "isPrimary": false,
+    "blurb": "Classic 12x cine zoom. Heavy — plan your support."
+  },
+
+  {
+    "id": "light-skypanel-s60",
+    "name": "ARRI SkyPanel S60-C",
+    "category": "Lighting",
+    "dayRateAED": 400,
+    "rentalHouseId": "arri-rental-dubai",
+    "tags": ["arri", "skypanel", "led", "soft light", "rgb"],
+    "isPrimary": true,
+    "blurb": "RGBW LED soft panel. Full color control."
+  },
+  {
+    "id": "light-aputure-600d",
+    "name": "Aputure LS 600d Pro",
+    "category": "Lighting",
+    "dayRateAED": 200,
+    "rentalHouseId": "filmquip",
+    "tags": ["aputure", "600d", "daylight", "cob", "led"],
+    "isPrimary": true,
+    "blurb": "600W daylight LED. Bowens mount. Workhorse key light."
+  },
+  {
+    "id": "light-astera-titan-4pack",
+    "name": "Astera Titan Tube (4-pack)",
+    "category": "Lighting",
+    "dayRateAED": 500,
+    "rentalHouseId": "filmquip",
+    "tags": ["astera", "titan", "tube", "rgb", "battery"],
+    "isPrimary": false,
+    "blurb": "Battery-powered RGB tubes. Wireless DMX, magnet mount."
+  },
+  {
+    "id": "light-arri-m18",
+    "name": "ARRI M18 HMI",
+    "category": "Lighting",
+    "dayRateAED": 800,
+    "rentalHouseId": "arri-rental-dubai",
+    "tags": ["arri", "m18", "hmi", "daylight", "hard light"],
+    "isPrimary": true,
+    "blurb": "1800W HMI. Daylight hard source. Needs a ballast + 2.5kW circuit."
+  },
+
+  {
+    "id": "grip-oconnor-2575d",
+    "name": "O'Connor 2575D Fluid Head",
+    "category": "Grip",
+    "dayRateAED": 400,
+    "rentalHouseId": "filmquip",
+    "tags": ["oconnor", "2575", "fluid head", "tripod"],
+    "isPrimary": false,
+    "blurb": "Heavy-duty fluid head. Rated to ~31kg payload."
+  },
+  {
+    "id": "grip-sachtler-flowtech-100",
+    "name": "Sachtler Flowtech 100 Tripod",
+    "category": "Grip",
+    "dayRateAED": 250,
+    "rentalHouseId": "filmquip",
+    "tags": ["sachtler", "flowtech", "tripod", "legs"],
+    "isPrimary": false,
+    "blurb": "100mm bowl. Fast-release clamps."
+  },
+  {
+    "id": "grip-century-cstand",
+    "name": "Matthews Super Hollywood C-Stand",
+    "category": "Grip",
+    "dayRateAED": 50,
+    "rentalHouseId": "filmquip",
+    "tags": ["cstand", "century", "stand"],
+    "isPrimary": false,
+    "blurb": "Industry-standard C-stand with grip arm."
+  },
+  {
+    "id": "grip-combo-stand",
+    "name": "Combo Stand (with Grip Head)",
+    "category": "Grip",
+    "dayRateAED": 80,
+    "rentalHouseId": "filmquip",
+    "tags": ["combo stand", "stand", "grip"],
+    "isPrimary": false,
+    "blurb": "Heavy combo stand, 20lb capacity, junior pin."
+  },
+
+  {
+    "id": "audio-mkh416",
+    "name": "Sennheiser MKH 416 Shotgun Mic",
+    "category": "Audio",
+    "dayRateAED": 120,
+    "rentalHouseId": "filmquip",
+    "tags": ["sennheiser", "mkh416", "shotgun", "boom"],
+    "isPrimary": false,
+    "blurb": "Industry-standard shotgun. Pair with a blimp."
+  },
+  {
+    "id": "audio-mixpre-10",
+    "name": "Sound Devices MixPre-10 II",
+    "category": "Audio",
+    "dayRateAED": 200,
+    "rentalHouseId": "filmquip",
+    "tags": ["sound devices", "mixpre", "recorder", "mixer"],
+    "isPrimary": false,
+    "blurb": "10-input production mixer-recorder. Timecode in/out."
+  },
+  {
+    "id": "audio-rycote-blimp",
+    "name": "Rycote Super-Blimp Windshield",
+    "category": "Audio",
+    "dayRateAED": 80,
+    "rentalHouseId": "filmquip",
+    "tags": ["rycote", "blimp", "windshield", "zeppelin"],
+    "isPrimary": false,
+    "blurb": "Windshield + shock mount for shotgun mics."
+  },
+
+  {
+    "id": "mon-smallhd-703",
+    "name": "SmallHD 703 Bolt Monitor",
+    "category": "Monitoring",
+    "dayRateAED": 250,
+    "rentalHouseId": "filmquip",
+    "tags": ["smallhd", "703", "monitor", "director"],
+    "isPrimary": false,
+    "blurb": "7\" director monitor with integrated Bolt 500 receiver."
+  },
+  {
+    "id": "mon-teradek-bolt-4k-750",
+    "name": "Teradek Bolt 4K 750 TX/RX Kit",
+    "category": "Monitoring",
+    "dayRateAED": 600,
+    "rentalHouseId": "filmquip",
+    "tags": ["teradek", "bolt", "wireless video", "video village"],
+    "isPrimary": false,
+    "blurb": "750 ft zero-delay wireless 4K video. Up to 4 receivers."
+  },
+
+  {
+    "id": "pwr-anton-titon-240",
+    "name": "Anton Bauer Titon 240 V-Mount",
+    "category": "Power",
+    "dayRateAED": 80,
+    "rentalHouseId": "filmquip",
+    "tags": ["anton bauer", "titon", "v-mount", "battery"],
+    "isPrimary": false,
+    "blurb": "237Wh V-mount brick. Air-safe."
+  },
+  {
+    "id": "pwr-vmount-charger-4x",
+    "name": "V-Mount 4-Channel Charger",
+    "category": "Power",
+    "dayRateAED": 60,
+    "rentalHouseId": "filmquip",
+    "tags": ["charger", "v-mount", "bebob", "anton bauer"],
+    "isPrimary": false,
+    "blurb": "Overnight-charge 4 V-mount bricks in parallel."
+  },
+  {
+    "id": "pwr-honda-eu22i",
+    "name": "Honda EU22i Generator",
+    "category": "Power",
+    "dayRateAED": 150,
+    "rentalHouseId": "filmquip",
+    "tags": ["honda", "generator", "genny", "eu22i"],
+    "isPrimary": false,
+    "blurb": "Quiet 2.2kW inverter generator. Fits in a hatchback."
+  },
+
+  {
+    "id": "media-codex-compact-2tb",
+    "name": "Codex Compact Drive 2TB",
+    "category": "Media",
+    "dayRateAED": 400,
+    "rentalHouseId": "arri-rental-dubai",
+    "tags": ["codex", "compact drive", "media", "alexa 35", "alexa mini lf"],
+    "isPrimary": false,
+    "blurb": "For Alexa Mini LF and Alexa 35."
+  },
+  {
+    "id": "media-red-cfexpress-660",
+    "name": "RED PRO CFexpress 660GB",
+    "category": "Media",
+    "dayRateAED": 300,
+    "rentalHouseId": "filmquip",
+    "tags": ["red", "cfexpress", "media", "vraptor", "komodo"],
+    "isPrimary": false,
+    "blurb": "Approved for V-Raptor and Komodo-X."
+  },
+
+  {
+    "id": "acc-arri-master-grip",
+    "name": "ARRI Master Grip Zoom",
+    "category": "Accessories",
+    "dayRateAED": 150,
+    "rentalHouseId": "arri-rental-dubai",
+    "tags": ["arri", "master grip", "zoom rocker", "handheld"],
+    "isPrimary": false,
+    "blurb": "Wired zoom/record control for Alexa. Right-hand grip."
+  },
+  {
+    "id": "acc-rod-kit-15-19",
+    "name": "15mm / 19mm Rod Kit",
+    "category": "Accessories",
+    "dayRateAED": 60,
+    "rentalHouseId": "filmquip",
+    "tags": ["rods", "15mm", "19mm", "studio rods"],
+    "isPrimary": false,
+    "blurb": "Mixed 15mm studio + 19mm studio rod set with iris."
+  }
+]
