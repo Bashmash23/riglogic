@@ -13,11 +13,10 @@ interface Props {
 export function GearCard({ item, house, onAdd }: Props) {
   return (
     <div className="group flex flex-col rounded-lg border border-neutral-800 bg-neutral-900/60 overflow-hidden hover:border-neutral-700 transition-colors">
-      {/* Fixed 48px (h-12) image strip — compact thumbnail regardless of
-          card width. GearImage handles retry + branded placeholder. At
-          this height we use the "thumb" variant so the placeholder is
-          just the monogram (the full wordmark won't fit cleanly). */}
-      <div className="relative h-12">
+      {/* Fixed 64px (h-16) image strip — middle-ground thumbnail, big
+          enough to read the gear but not hero-sized. GearImage handles
+          retry + branded placeholder. */}
+      <div className="relative h-16">
         <GearImage src={item.imageUrl} alt={item.name} variant="thumb" padding="sm" />
         {item.isPrimary && (
           <span className="absolute top-2 left-2 rounded-full bg-accent/90 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-neutral-950">
