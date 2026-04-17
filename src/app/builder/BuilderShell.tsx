@@ -38,11 +38,18 @@ function BuilderLayout() {
   }, [query, category, houseId]);
 
   return (
-    <div className="flex min-h-screen flex-1 flex-col">
+    // On desktop we lock the outer column to exactly 100vh and let the gear
+    // grid scroll inside <main>. That way the KitSidebar on the right sits
+    // in the flex row at a fixed height and naturally stays on screen as
+    // you scroll gear — no position: sticky gymnastics needed, which was
+    // unreliable when main content was taller than the viewport.
+    // Mobile keeps the old min-h-screen behaviour so the page scrolls
+    // naturally and the sidebar stacks below.
+    <div className="flex min-h-screen flex-1 flex-col lg:h-screen lg:min-h-0 lg:overflow-hidden">
       <TopNav />
 
-      <div className="flex flex-1 flex-col lg:flex-row">
-        <main className="flex flex-1 flex-col gap-4 p-6">
+      <div className="flex flex-1 flex-col lg:min-h-0 lg:flex-row">
+        <main className="flex flex-1 flex-col gap-4 p-6 lg:min-h-0 lg:overflow-y-auto">
           <SmartMatchPanel />
 
           <SearchAndFilter

@@ -33,10 +33,12 @@ export function KitSidebar({ onStartWithCamera }: Props) {
   const isEmpty = linesWithGear.length === 0;
 
   return (
-    // lg:sticky + top-0 + h-screen pins the sidebar to the viewport on
-    // desktop, so the kit list (and totals pinned at the bottom) stay
-    // visible as you scroll through the gear grid.
-    <aside className="flex w-full flex-col border-l border-neutral-800 bg-neutral-950 lg:sticky lg:top-0 lg:h-screen lg:w-[380px] lg:min-w-[380px] lg:self-start">
+    // The sidebar naturally fills the height of the flex row on desktop
+    // (BuilderShell locks the outer column to 100vh and scrolls <main>
+    // internally), so it always stays on screen while you browse gear.
+    // min-h-0 on the aside is what lets the line-list div below actually
+    // scroll instead of stretching the aside beyond its parent.
+    <aside className="flex w-full flex-col border-l border-neutral-800 bg-neutral-950 lg:min-h-0 lg:w-[380px] lg:min-w-[380px]">
       <div className="border-b border-neutral-800 p-4 space-y-3">
         <ProjectSwitcher />
         <div className="flex items-center justify-between text-xs text-neutral-500">
@@ -127,20 +129,28 @@ export function KitSidebar({ onStartWithCamera }: Props) {
         )}
       </div>
 
-      <div className="border-t border-neutral-800 p-4 text-sm">
+      {/* Totals — always visible at the bottom of the sidebar. Updates
+          live as items are added / removed / quantity-changed because
+          useKit() re-renders the whole sidebar on any kit mutation. */}
+      <div className="border-t border-neutral-800 bg-neutral-950 p-4">
         <div className="flex items-baseline justify-between">
-          <span className="text-neutral-400">Per-day total</span>
-          <span className="text-lg font-semibold text-neutral-100">
-            AED {perDayTotal.toLocaleString()}
+          <span className="text-xs font-medium uppercase tracking-wider text-neutral-400">
+            {days > 0 ? "Kit total" : "Per-day total"}
+            {days > 0 && (
+              <span className="ml-1 text-neutral-500 normal-case">
+                · {days}d
+              </span>
+            )}
+          </span>
+          <span className="text-2xl font-semibold text-accent">
+            AED {(days > 0 ? kitTotal : perDayTotal).toLocaleString()}
           </span>
         </div>
         {days > 0 && (
-          <div className="mt-1 flex items-baseline justify-between">
+          <div className="mt-1 flex items-baseline justify-between text-xs">
+            <span className="text-neutral-500">Per-day</span>
             <span className="text-neutral-300">
-              Kit total <span className="text-neutral-500">· {days}d</span>
-            </span>
-            <span className="text-2xl font-semibold text-accent">
-              AED {kitTotal.toLocaleString()}
+              AED {perDayTotal.toLocaleString()}
             </span>
           </div>
         )}
