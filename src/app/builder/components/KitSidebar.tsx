@@ -110,8 +110,10 @@ export function KitSidebar({ onStartWithCamera }: Props) {
                         {gear.name}
                       </div>
                       <div className="text-xs text-neutral-500">
-                        {house?.name ?? "—"} · AED{" "}
-                        {gear.dayRateAED.toLocaleString()}/day
+                        {house?.name ?? "—"} ·{" "}
+                        {gear.dayRateAED > 0
+                          ? `AED ${gear.dayRateAED.toLocaleString()}/day`
+                          : "Price on request"}
                       </div>
                     </div>
                     <button

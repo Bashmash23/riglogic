@@ -36,8 +36,14 @@ export function GearCard({ item, house, onAdd }: Props) {
         <div className="mt-auto flex items-center justify-between pt-2">
           <div className="text-xs">
             <div className="font-medium text-neutral-200">
-              AED {item.dayRateAED.toLocaleString()}
-              <span className="text-neutral-500 font-normal"> / day</span>
+              {item.dayRateAED > 0 ? (
+                <>
+                  AED {item.dayRateAED.toLocaleString()}
+                  <span className="text-neutral-500 font-normal"> / day</span>
+                </>
+              ) : (
+                <span className="text-neutral-400 italic">Price on request</span>
+              )}
             </div>
             {house && (
               <a
