@@ -1,0 +1,36 @@
+// RigLogic — Prisma schema
+// Postgres hosted on Railway
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Public shareable kit snapshot. Created when a user clicks "Share" in the
+// builder. The payload is a JSON snapshot of the kit so the share link
+// renders correctly even if the gear catalog changes later.
+model ShareLink {
+  id         String   @id @default(cuid())
+  shortId    String   @unique // the /s/[shortId] URL segment
+  payload    Json     // { projectName, dates, items: [...], notes }
+  createdBy  String?  // Clerk userId, nullable in case of guest-mode later
+  createdAt  DateTime @default(now())
+  viewCount  Int      @default(0)
+
+  @@index([createdAt])
+}
+
+// Crew waitlist + Pro tier waitlist email capture.
+model WaitlistSignup {
+  id        String   @id @default(cuid())
+  email     String
+  source    String   // "crew" | "pro-tier" | etc.
+  createdAt DateTime @default(now())
+
+  @@unique([email, source])
+  @@index([source, createdAt])
+}
