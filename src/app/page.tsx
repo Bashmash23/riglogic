@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Show, SignInButton, UserButton } from "@clerk/nextjs";
 import { Search, Sparkles, FileText, Link as LinkIcon } from "lucide-react";
+import { HomeProjects } from "./HomeProjects";
 
 export default function Home() {
   return (
@@ -72,6 +73,11 @@ export default function Home() {
           Indicative rates only. Confirm pricing with rental house.
         </p>
       </section>
+
+      {/* Projects — signed-in only */}
+      <Show when="signed-in">
+        <HomeProjects />
+      </Show>
 
       {/* Three-step pitch */}
       <section className="border-t border-neutral-800 bg-neutral-950/50 px-6 py-16">
