@@ -1,0 +1,142 @@
+{
+  "cam-alexa-mini-lf": {
+    "cameraName": "ARRI Alexa Mini LF",
+    "categories": {
+      "Support": [
+        {
+          "gearItemId": "grip-oconnor-2575d",
+          "why": "O'Connor 2575D fluid head — rated for Alexa Mini LF payload in studio configuration."
+        },
+        {
+          "gearItemId": "grip-sachtler-flowtech-100",
+          "why": "100mm bowl tripod legs to pair with the 2575D. Fast deploy on location."
+        }
+      ],
+      "Power": [
+        {
+          "gearItemId": "pwr-anton-titon-240",
+          "why": "V-mount primary. Mini LF draws ~60W body — a Titon 240 runs ~4h depending on accessories."
+        },
+        {
+          "gearItemId": "pwr-vmount-charger-4x",
+          "why": "Overnight-charge V-mount bricks for the next shoot day."
+        }
+      ],
+      "Lens Mount": [],
+      "Media": [
+        {
+          "gearItemId": "media-codex-compact-2tb",
+          "why": "Required — Mini LF records to Codex Compact Drive. One 2TB drive fits ~45 min of 4.5K ARRIRAW."
+        }
+      ],
+      "Monitoring": [
+        {
+          "gearItemId": "mon-teradek-bolt-4k-750",
+          "why": "Wireless video village to director and DIT. 4K support for native Mini LF output."
+        },
+        {
+          "gearItemId": "mon-smallhd-703",
+          "why": "Director monitor with integrated Bolt 500 receiver — pairs to the Bolt 4K TX."
+        }
+      ],
+      "Handheld Rig": [
+        {
+          "gearItemId": "acc-arri-master-grip",
+          "why": "Master Grip Zoom — wired zoom and record control for handheld / Steadicam."
+        },
+        {
+          "gearItemId": "acc-rod-kit-15-19",
+          "why": "15mm studio rods for accessory mounting (matte box, follow focus, EVF arm)."
+        }
+      ]
+    }
+  },
+  "cam-red-vraptor": {
+    "cameraName": "RED V-Raptor 8K VV",
+    "categories": {
+      "Support": [
+        {
+          "gearItemId": "grip-oconnor-2575d",
+          "why": "2575D handles the V-Raptor's weight when rigged out."
+        },
+        {
+          "gearItemId": "grip-sachtler-flowtech-100",
+          "why": "100mm bowl legs to pair with the 2575D."
+        }
+      ],
+      "Power": [
+        {
+          "gearItemId": "pwr-anton-titon-240",
+          "why": "V-mount V-Raptor plate required. Draws ~75W; plan two Titon 240s per camera per day."
+        },
+        {
+          "gearItemId": "pwr-vmount-charger-4x",
+          "why": "Four-channel V-mount charger for overnight turnaround."
+        }
+      ],
+      "Lens Mount": [],
+      "Media": [
+        {
+          "gearItemId": "media-red-cfexpress-660",
+          "why": "Required — RED PRO CFexpress 660GB cards. Approved for 8K VV recording."
+        }
+      ],
+      "Monitoring": [
+        {
+          "gearItemId": "mon-teradek-bolt-4k-750",
+          "why": "Wireless 4K video village for director and script."
+        },
+        {
+          "gearItemId": "mon-smallhd-703",
+          "why": "Director monitor with built-in Bolt 500 RX, pairs to the Bolt 4K TX."
+        }
+      ],
+      "Handheld Rig": [
+        {
+          "gearItemId": "acc-rod-kit-15-19",
+          "why": "15mm studio rods for matte box, follow focus, and battery plate mounting."
+        }
+      ]
+    }
+  },
+  "cam-sony-fx6": {
+    "cameraName": "Sony FX6",
+    "categories": {
+      "Support": [
+        {
+          "gearItemId": "grip-sachtler-flowtech-100",
+          "why": "Flowtech 100 legs — fast deploy for documentary work."
+        }
+      ],
+      "Power": [
+        {
+          "gearItemId": "pwr-anton-titon-240",
+          "why": "V-mount adapter plate carries a Titon 240 — more runtime than BP-U batteries."
+        },
+        {
+          "gearItemId": "pwr-vmount-charger-4x",
+          "why": "Overnight V-mount charger if you carry V-mount plates."
+        }
+      ],
+      "Lens Mount": [],
+      "Media": [
+        {
+          "gearItemId": "media-red-cfexpress-660",
+          "why": "FX6 uses CFexpress Type A — this is a different physical card. Substitute with Sony CFexpress Type A cards from the rental house (placeholder card shown here)."
+        }
+      ],
+      "Monitoring": [
+        {
+          "gearItemId": "mon-smallhd-703",
+          "why": "Director monitor for talent-facing or video-village setups."
+        }
+      ],
+      "Handheld Rig": [
+        {
+          "gearItemId": "acc-rod-kit-15-19",
+          "why": "15mm rods for matte box and follow focus on the FX6 cage."
+        }
+      ]
+    }
+  }
+}

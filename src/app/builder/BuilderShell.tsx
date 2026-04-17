@@ -10,6 +10,7 @@ import { SearchAndFilter } from "./components/SearchAndFilter";
 import { GearCard } from "./components/GearCard";
 import { KitSidebar } from "./components/KitSidebar";
 import { ExportDialog } from "./components/ExportDialog";
+import { SmartMatchPanel } from "./components/SmartMatchPanel";
 
 export function BuilderShell() {
   return (
@@ -48,6 +49,8 @@ function BuilderLayout() {
 
       <div className="flex flex-1 flex-col lg:flex-row">
         <main className="flex flex-1 flex-col gap-4 p-6">
+          <SmartMatchPanel />
+
           <SearchAndFilter
             query={query}
             onQueryChange={setQuery}
