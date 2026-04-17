@@ -3,7 +3,9 @@
 import { Copy, Minus, Plus, Trash2, Sparkles } from "lucide-react";
 import { useKit } from "@/lib/kitStore";
 import { getGear, getHouse } from "@/lib/catalog";
+import { computeRentalDays } from "@/lib/kitSnapshot";
 import type { KitLine } from "@/lib/types";
+import { DateRange } from "./DateRange";
 
 interface Props {
   onStartWithCamera?: () => void;
@@ -24,6 +26,8 @@ export function KitSidebar({ onStartWithCamera, onExportClick }: Props) {
     (sum, { line, gear }) => sum + line.quantity * gear.dayRateAED,
     0,
   );
+  const days = computeRentalDays(kit.startDate, kit.endDate);
+  const kitTotal = days > 0 ? perDayTotal * days : 0;
 
   const isEmpty = linesWithGear.length === 0;
 
@@ -48,6 +52,9 @@ export function KitSidebar({ onStartWithCamera, onExportClick }: Props) {
           <span>
             {linesWithGear.reduce((n, { line }) => n + line.quantity, 0)} pcs
           </span>
+        </div>
+        <div className="mt-3">
+          <DateRange />
         </div>
       </div>
 
@@ -129,6 +136,16 @@ export function KitSidebar({ onStartWithCamera, onExportClick }: Props) {
             AED {perDayTotal.toLocaleString()}
           </span>
         </div>
+        {days > 0 && (
+          <div className="mt-1 flex items-baseline justify-between">
+            <span className="text-neutral-300">
+              Kit total <span className="text-neutral-500">· {days}d</span>
+            </span>
+            <span className="text-2xl font-semibold text-accent">
+              AED {kitTotal.toLocaleString()}
+            </span>
+          </div>
+        )}
         <p className="mt-2 text-[11px] leading-snug text-neutral-500">
           Indicative rates only. Confirm pricing with rental house.
         </p>
