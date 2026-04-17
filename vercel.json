@@ -13,11 +13,5 @@
       "routePrefix": "/",
       "framework": "nextjs"
     }
-  },
-  "crons": [
-    {
-      "path": "/api/cron/refresh-stock",
-      "schedule": "0 6 * * *"
-    }
-  ]
+  }
 }

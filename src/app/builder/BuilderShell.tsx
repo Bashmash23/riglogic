@@ -3,7 +3,6 @@
 import { useMemo, useState } from "react";
 import { KitProvider, useKit } from "@/lib/kitStore";
 import { GEAR, HOUSES, getHouse, searchGear } from "@/lib/catalog";
-import { useScrapedGear } from "@/lib/useScrapedGear";
 import type { Category, GearItem } from "@/lib/types";
 import { TopNav } from "@/components/TopNav";
 import { SearchAndFilter } from "./components/SearchAndFilter";
@@ -27,35 +26,16 @@ function BuilderLayout() {
   const [category, setCategory] = useState<Category | null>(null);
   const [houseId, setHouseId] = useState<string | null>(null);
   const [exportOpen, setExportOpen] = useState(false);
-  const { items: scrapedItems, loading: scrapedLoading } = useScrapedGear();
-
-  // Option X (mix mode): merge placeholder catalog with live scraped items.
-  // Placeholder items keep their priority — Smart-Match rules still reference
-  // their IDs — and scraped items appear alongside for everything else.
-  const mergedCatalog: GearItem[] = useMemo(
-    () => [...GEAR, ...scrapedItems],
-    [scrapedItems],
-  );
 
   const results: GearItem[] = useMemo(() => {
-    let items: GearItem[] = mergedCatalog;
+    let items: GearItem[] = GEAR;
     if (query.trim()) {
-      const tokens = query.trim().toLowerCase().split(/\s+/).filter(Boolean);
-      if (tokens.length > 0) {
-        // Placeholder search has a blurb to match against; scraped items don't.
-        // Fall back to a simple name/tags search over the merged catalog.
-        const placeholderHits = new Set(searchGear(query).map((i) => i.id));
-        items = mergedCatalog.filter((i) => {
-          if (placeholderHits.has(i.id)) return true;
-          const hay = [i.name, i.category, ...i.tags].join(" ").toLowerCase();
-          return tokens.every((t) => hay.includes(t));
-        });
-      }
+      items = searchGear(query);
     }
     if (category) items = items.filter((i) => i.category === category);
     if (houseId) items = items.filter((i) => i.rentalHouseId === houseId);
     return items;
-  }, [mergedCatalog, query, category, houseId]);
+  }, [query, category, houseId]);
 
   return (
     <div className="flex min-h-screen flex-1 flex-col">
