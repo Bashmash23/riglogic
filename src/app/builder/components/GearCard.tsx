@@ -13,11 +13,12 @@ interface Props {
 export function GearCard({ item, house, onAdd }: Props) {
   return (
     <div className="group flex flex-col rounded-lg border border-neutral-800 bg-neutral-900/60 overflow-hidden hover:border-neutral-700 transition-colors">
-      {/* Fixed 72px image strip — a notch larger than h-16 for better
-          gear readability without going back to hero-sized. GearImage
-          handles retry + branded placeholder. */}
-      <div className="relative h-[72px]">
-        <GearImage src={item.imageUrl} alt={item.name} variant="thumb" padding="sm" />
+      {/* Fixed 96px (h-24) image strip — clearly larger for better gear
+          readability. Switch back to "card" variant so the placeholder
+          shows the full branded monogram + wordmark (fits cleanly at
+          this height). */}
+      <div className="relative h-24">
+        <GearImage src={item.imageUrl} alt={item.name} variant="card" />
         {item.isPrimary && (
           <span className="absolute top-2 left-2 rounded-full bg-accent/90 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-neutral-950">
             Primary
