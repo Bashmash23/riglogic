@@ -7,6 +7,7 @@
     "rentalHouseId": "arri-rental-dubai",
     "tags": ["arri", "alexa", "lf", "large format", "cinema camera", "primary"],
     "isPrimary": true,
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a8/Alexa_Mini_LF.jpg/960px-Alexa_Mini_LF.jpg",
     "blurb": "Large-format cinema workhorse. LPL mount, ProRes + ARRIRAW."
   },
   {
@@ -17,6 +18,7 @@
     "rentalHouseId": "arri-rental-dubai",
     "tags": ["arri", "alexa", "35", "super 35", "cinema camera", "primary"],
     "isPrimary": true,
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d5/Alexa_35_%282%29.jpg/960px-Alexa_35_%282%29.jpg",
     "blurb": "Latest-gen S35 ARRI. 17 stops dynamic range, REVEAL color science."
   },
   {
@@ -27,6 +29,7 @@
     "rentalHouseId": "filmquip",
     "tags": ["red", "vraptor", "raptor", "8k", "vv", "cinema camera", "primary"],
     "isPrimary": true,
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/RED_V-Raptor_XL_8K_S35.jpg/960px-RED_V-Raptor_XL_8K_S35.jpg",
     "blurb": "RED VV sensor, 8K at 120fps, global shutter-ish rolling performance."
   },
   {
@@ -37,6 +40,7 @@
     "rentalHouseId": "filmquip",
     "tags": ["sony", "venice", "cinema camera", "primary"],
     "isPrimary": true,
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/f/f2/Sony_CineAlta_VENICE_2.jpg",
     "blurb": "Dual-base ISO, 8.6K, Rialto extension available."
   },
   {
@@ -47,6 +51,7 @@
     "rentalHouseId": "filmquip",
     "tags": ["sony", "fx6", "documentary", "run and gun"],
     "isPrimary": true,
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/Sony_Cinema_line_FX6.jpg/960px-Sony_Cinema_line_FX6.jpg",
     "blurb": "Full-frame documentary camera. S-Log3, dual base ISO."
   },
   {
@@ -57,6 +62,7 @@
     "rentalHouseId": "filmquip",
     "tags": ["canon", "c70", "super 35", "documentary"],
     "isPrimary": true,
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cc/Canon_CINEMA_EOS_C70.jpg/960px-Canon_CINEMA_EOS_C70.jpg",
     "blurb": "Compact S35 cinema body. RF mount with EF adapter option."
   },
 
@@ -98,6 +104,7 @@
     "rentalHouseId": "deep-focus",
     "tags": ["angenieux", "optimo", "zoom", "pl mount"],
     "isPrimary": false,
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/9/9f/Angenieux_Optimo_Ultra_12X.jpg/960px-Angenieux_Optimo_Ultra_12X.jpg",
     "blurb": "Classic 12x cine zoom. Heavy — plan your support."
   },
 
@@ -160,6 +167,7 @@
     "rentalHouseId": "filmquip",
     "tags": ["sachtler", "flowtech", "tripod", "legs"],
     "isPrimary": false,
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/Sachtler_tripod.jpg/960px-Sachtler_tripod.jpg",
     "blurb": "100mm bowl. Fast-release clamps."
   },
   {
@@ -170,6 +178,7 @@
     "rentalHouseId": "filmquip",
     "tags": ["cstand", "century", "stand"],
     "isPrimary": false,
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/07/40%22_Double_Riser_Spring_Loaded_Folding_C-Stand_w-Grip_Head_and_Arm.jpg/960px-40%22_Double_Riser_Spring_Loaded_Folding_C-Stand_w-Grip_Head_and_Arm.jpg",
     "blurb": "Industry-standard C-stand with grip arm."
   },
   {
@@ -191,6 +200,7 @@
     "rentalHouseId": "filmquip",
     "tags": ["sennheiser", "mkh416", "shotgun", "boom"],
     "isPrimary": false,
+    "imageUrl": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/43/Sennheiser_MKH416.jpg/960px-Sennheiser_MKH416.jpg",
     "blurb": "Industry-standard shotgun. Pair with a blimp."
   },
   {
