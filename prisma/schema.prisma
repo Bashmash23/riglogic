@@ -24,6 +24,30 @@ model ShareLink {
   @@index([createdAt])
 }
 
+// Scraped gear from UAE rental-house websites.
+// Populated by the daily cron at /api/cron/refresh-stock.
+// `sourceHouse` is a stable short key: "gearbox" | "lensman" | "filmquip" |
+// "actionfilmz" | "lighthouse". `externalId` is a site-specific identifier
+// (Shopify product id, WooCommerce product slug, etc.).
+model ScrapedGear {
+  id          String   @id @default(cuid())
+  sourceHouse String
+  externalId  String
+  sourceUrl   String
+  name        String
+  category    String?
+  priceAED    Int?
+  inStock     Boolean  @default(true)
+  imageUrl    String?
+  firstSeen   DateTime @default(now())
+  lastSeen    DateTime @default(now())
+
+  @@unique([sourceHouse, externalId])
+  @@index([sourceHouse])
+  @@index([inStock])
+  @@index([lastSeen])
+}
+
 // Crew waitlist + Pro tier waitlist email capture.
 model WaitlistSignup {
   id        String   @id @default(cuid())

@@ -16,5 +16,23 @@
     "name": "Deep Focus",
     "website": "https://deepfocus.ae",
     "specialty": "Cinema lenses, zooms, and specialty optics"
+  },
+  {
+    "id": "lensman",
+    "name": "Lensman Express",
+    "website": "https://lensmanexpress.com",
+    "specialty": "Live inventory — cameras, lenses, and accessories"
+  },
+  {
+    "id": "gearbox",
+    "name": "Gearbox",
+    "website": "https://gearbox.ae",
+    "specialty": "Live inventory — photography & cinema rental"
+  },
+  {
+    "id": "actionfilmz",
+    "name": "Action Filmz",
+    "website": "https://actionfilmz.com",
+    "specialty": "Live inventory — cinema production gear"
   }
 ]

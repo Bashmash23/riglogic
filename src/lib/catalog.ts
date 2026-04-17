@@ -2,6 +2,7 @@
 import gearJson from "@/data/gear.json";
 import housesJson from "@/data/houses.json";
 import type { Category, GearItem, RentalHouse } from "./types";
+import { lookupScrapedGear } from "./scrapedGearCache";
 
 export const GEAR: GearItem[] = gearJson as GearItem[];
 export const HOUSES: RentalHouse[] = housesJson as RentalHouse[];
@@ -10,7 +11,10 @@ const GEAR_BY_ID = new Map(GEAR.map((item) => [item.id, item]));
 const HOUSE_BY_ID = new Map(HOUSES.map((house) => [house.id, house]));
 
 export function getGear(id: string): GearItem | undefined {
-  return GEAR_BY_ID.get(id);
+  // Placeholder catalog wins. If not found, fall back to the client-side
+  // scraped-gear cache (empty on the server, populated after the first
+  // /api/catalog fetch on the client).
+  return GEAR_BY_ID.get(id) ?? lookupScrapedGear(id);
 }
 
 export function getHouse(id: string): RentalHouse | undefined {
