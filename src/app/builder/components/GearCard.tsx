@@ -13,9 +13,9 @@ interface Props {
 export function GearCard({ item, house, onAdd }: Props) {
   return (
     <div className="group flex flex-col rounded-lg border border-neutral-800 bg-neutral-900/60 overflow-hidden hover:border-neutral-700 transition-colors">
-      {/* aspect-[5/2] is a short, wide thumbnail — noticeably smaller than
-          the old 16/9. GearImage handles the retry + branded placeholder. */}
-      <div className="relative aspect-[5/2]">
+      {/* Fixed 80px (h-20) image strip — small, compact thumbnail regardless
+          of card width. GearImage handles retry + branded placeholder. */}
+      <div className="relative h-20">
         <GearImage src={item.imageUrl} alt={item.name} variant="card" />
         {item.isPrimary && (
           <span className="absolute top-2 left-2 rounded-full bg-accent/90 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-neutral-950">

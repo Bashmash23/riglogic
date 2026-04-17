@@ -53,12 +53,14 @@ export function KitSidebar({ onStartWithCamera }: Props) {
         <DateRange />
       </div>
 
-      {/* List takes its natural height (no flex-1) so the totals block
-          below sits immediately under the last line instead of being
-          pushed to the bottom of the panel. min-h-0 + overflow-y-auto
-          still make the list scroll internally if it gets long enough
-          to exceed the sidebar's bounded height on desktop. */}
-      <div className="min-h-0 overflow-y-auto">
+      {/* List + totals share one scroll region. Totals uses sticky
+          bottom-0 inside it:
+            - short list: totals sits in natural flow right under the
+              last line (that's what the user wants)
+            - long list: totals sticks at the bottom of the visible
+              scroll area as you scroll through items
+          This pattern avoids any dependence on flex-1 gymnastics. */}
+      <div className="flex-1 min-h-0 overflow-y-auto">
         {isEmpty ? (
           <EmptyState onStartWithCamera={onStartWithCamera} />
         ) : (
@@ -135,36 +137,41 @@ export function KitSidebar({ onStartWithCamera }: Props) {
             })}
           </ul>
         )}
-      </div>
 
-      {/* Totals — sits directly under the line list. Updates live as
-          items are added / removed / quantity-changed because useKit()
-          re-renders the whole sidebar on any kit mutation. */}
-      <div className="border-t border-neutral-800 bg-neutral-950 p-4">
-        <div className="flex items-baseline justify-between">
-          <span className="text-xs font-medium uppercase tracking-wider text-neutral-400">
-            {days > 0 ? "Kit total" : "Per-day total"}
-            {days > 0 && (
-              <span className="ml-1 text-neutral-500 normal-case">
-                · {days}d
+        {/* Totals — sticky-bottom inside the scroll region so it sits
+            right under the list when the list is short, and pins to
+            the bottom of the viewport as the list scrolls when long.
+            Updates live as items are added / removed / quantity-changed
+            because useKit() re-renders the whole sidebar on any
+            mutation. */}
+        {!isEmpty && (
+          <div className="sticky bottom-0 border-t border-neutral-800 bg-neutral-950/95 p-4 backdrop-blur-sm">
+            <div className="flex items-baseline justify-between">
+              <span className="text-xs font-medium uppercase tracking-wider text-neutral-400">
+                {days > 0 ? "Kit total" : "Per-day total"}
+                {days > 0 && (
+                  <span className="ml-1 text-neutral-500 normal-case">
+                    · {days}d
+                  </span>
+                )}
               </span>
+              <span className="text-2xl font-semibold text-accent">
+                AED {(days > 0 ? kitTotal : perDayTotal).toLocaleString()}
+              </span>
+            </div>
+            {days > 0 && (
+              <div className="mt-1 flex items-baseline justify-between text-xs">
+                <span className="text-neutral-500">Per-day</span>
+                <span className="text-neutral-300">
+                  AED {perDayTotal.toLocaleString()}
+                </span>
+              </div>
             )}
-          </span>
-          <span className="text-2xl font-semibold text-accent">
-            AED {(days > 0 ? kitTotal : perDayTotal).toLocaleString()}
-          </span>
-        </div>
-        {days > 0 && (
-          <div className="mt-1 flex items-baseline justify-between text-xs">
-            <span className="text-neutral-500">Per-day</span>
-            <span className="text-neutral-300">
-              AED {perDayTotal.toLocaleString()}
-            </span>
+            <p className="mt-2 text-[11px] leading-snug text-neutral-500">
+              Indicative rates only. Confirm pricing with rental house.
+            </p>
           </div>
         )}
-        <p className="mt-2 text-[11px] leading-snug text-neutral-500">
-          Indicative rates only. Confirm pricing with rental house.
-        </p>
       </div>
     </aside>
   );
