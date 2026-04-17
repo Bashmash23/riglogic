@@ -34,5 +34,11 @@
     "name": "Action Filmz",
     "website": "https://actionfilmz.com",
     "specialty": "Live inventory — cinema production gear"
+  },
+  {
+    "id": "mayak",
+    "name": "Mayak Studio",
+    "website": "https://mayak-studio.com",
+    "specialty": "Mirrorless & cinema camera rental — hybrid and video-first bodies"
   }
 ]

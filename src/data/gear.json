@@ -316,5 +316,49 @@
     "tags": ["rods", "15mm", "19mm", "studio rods"],
     "isPrimary": false,
     "blurb": "Mixed 15mm studio + 19mm studio rod set with iris."
+  },
+  {
+    "id": "cam-sony-a7iv",
+    "name": "Sony A7 IV Full-Frame Hybrid",
+    "category": "Cameras",
+    "dayRateAED": 300,
+    "rentalHouseId": "mayak",
+    "tags": ["sony", "a7", "a7iv", "mirrorless", "full frame", "hybrid", "primary"],
+    "isPrimary": true,
+    "imageUrl": null,
+    "blurb": "33MP full-frame hybrid. 4K60, S-Log3, E-mount. Incl. 5% VAT."
+  },
+  {
+    "id": "cam-sony-a7siii",
+    "name": "Sony A7S III Full-Frame",
+    "category": "Cameras",
+    "dayRateAED": 300,
+    "rentalHouseId": "mayak",
+    "tags": ["sony", "a7", "a7siii", "mirrorless", "full frame", "low light", "primary"],
+    "isPrimary": true,
+    "imageUrl": null,
+    "blurb": "Low-light champion. 4K120, 15+ stops, E-mount. Incl. 5% VAT."
+  },
+  {
+    "id": "cam-sony-fx3",
+    "name": "Sony FX3 Full-Frame Cinema",
+    "category": "Cameras",
+    "dayRateAED": 350,
+    "rentalHouseId": "mayak",
+    "tags": ["sony", "fx3", "cinema line", "full frame", "e-mount", "primary"],
+    "isPrimary": true,
+    "imageUrl": null,
+    "blurb": "Cinema-line compact body. 4K120, dual base ISO, E-mount. Incl. 5% VAT."
+  },
+  {
+    "id": "cam-canon-r5-mkii",
+    "name": "Canon EOS R5 Mark II",
+    "category": "Cameras",
+    "dayRateAED": 380,
+    "rentalHouseId": "mayak",
+    "tags": ["canon", "r5", "r5 mark ii", "mirrorless", "full frame", "rf mount", "primary"],
+    "isPrimary": true,
+    "imageUrl": null,
+    "blurb": "45MP stacked sensor. 8K RAW, 4K120, RF mount. Incl. 5% VAT."
   }
 ]
