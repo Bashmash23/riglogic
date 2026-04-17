@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { Plus, ExternalLink } from "lucide-react";
 import type { GearItem, RentalHouse } from "@/lib/types";
 
@@ -9,8 +10,7 @@ interface Props {
   onAdd: () => void;
 }
 
-// Deterministic category → gradient palette for the image placeholder.
-// Not a real image, but a category-tinted block so the catalog feels populated.
+// Deterministic category → gradient palette for the image fallback.
 const CATEGORY_GRADIENTS: Record<string, string> = {
   Cameras: "from-amber-900/40 to-orange-800/30",
   Lenses: "from-sky-900/40 to-blue-800/30",
@@ -24,16 +24,36 @@ const CATEGORY_GRADIENTS: Record<string, string> = {
 };
 
 export function GearCard({ item, house, onAdd }: Props) {
+  const [imageFailed, setImageFailed] = useState(false);
   const gradient =
     CATEGORY_GRADIENTS[item.category] ?? "from-neutral-800 to-neutral-700";
+  const showImage = !!item.imageUrl && !imageFailed;
+
   return (
     <div className="group flex flex-col rounded-lg border border-neutral-800 bg-neutral-900/60 overflow-hidden hover:border-neutral-700 transition-colors">
       <div
-        className={`relative aspect-[4/3] bg-gradient-to-br ${gradient} flex items-center justify-center`}
+        className={`relative aspect-[4/3] ${
+          showImage
+            ? "bg-neutral-950"
+            : `bg-gradient-to-br ${gradient}`
+        } flex items-center justify-center`}
       >
-        <span className="text-xs font-medium tracking-wide text-neutral-300/70 uppercase">
-          {item.category}
-        </span>
+        {showImage ? (
+          // Plain <img> keeps us off the Next.js remote-image allowlist and
+          // lets us silently fall back to the category gradient on error.
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={item.imageUrl ?? undefined}
+            alt={item.name}
+            loading="lazy"
+            onError={() => setImageFailed(true)}
+            className="h-full w-full object-contain p-3"
+          />
+        ) : (
+          <span className="text-xs font-medium tracking-wide text-neutral-300/70 uppercase">
+            {item.category}
+          </span>
+        )}
         {item.isPrimary && (
           <span className="absolute top-2 left-2 rounded-full bg-accent/90 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-neutral-950">
             Primary

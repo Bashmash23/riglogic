@@ -1,5 +1,6 @@
 // Compose a `mailto:` URL per rental house with the items for that house,
-// shoot dates, and a short polite inquiry line.
+// shoot dates, and a short polite inquiry line. Also returns the raw subject
+// + body so the UI can display them for copy/paste.
 
 import {
   groupByHouse,
@@ -7,9 +8,11 @@ import {
   type KitSnapshot,
 } from "./kitSnapshot";
 
-interface MailtoDraft {
+export interface MailtoDraft {
   houseId: string | null;
   houseName: string;
+  subject: string;
+  body: string;
   mailto: string;
   itemCount: number;
 }
@@ -18,34 +21,31 @@ export function mailtoForHouse(
   snap: KitSnapshot,
   houseId: string,
   recipientEmail?: string,
-): string | null {
+): MailtoDraft | null {
   const houses = groupByHouse(snap);
   const house = houses.find((h) => h.houseId === houseId);
   if (!house) return null;
-  return buildMailto(snap, house, recipientEmail);
+  return buildDraft(snap, house, recipientEmail);
 }
 
 export function allHouseMailtos(
   snap: KitSnapshot,
   recipientMap: Record<string, string> = {},
 ): MailtoDraft[] {
-  return groupByHouse(snap).map((house) => ({
-    houseId: house.houseId,
-    houseName: house.houseName,
-    itemCount: house.items.length,
-    mailto: buildMailto(
+  return groupByHouse(snap).map((house) =>
+    buildDraft(
       snap,
       house,
       house.houseId ? recipientMap[house.houseId] : undefined,
     ),
-  }));
+  );
 }
 
-function buildMailto(
+function buildDraft(
   snap: KitSnapshot,
   house: ReturnType<typeof groupByHouse>[number],
   recipientEmail?: string,
-): string {
+): MailtoDraft {
   const { days } = snapshotTotals(snap);
   const dateFragment =
     snap.startDate && snap.endDate
@@ -67,7 +67,9 @@ function buildMailto(
     lines.push(`• ${it.quantity} × ${it.name}`);
   }
   lines.push("");
-  lines.push(`Shoot dates: ${dateFragment}${days > 0 ? ` (${days} day${days === 1 ? "" : "s"})` : ""}`);
+  lines.push(
+    `Shoot dates: ${dateFragment}${days > 0 ? ` (${days} day${days === 1 ? "" : "s"})` : ""}`,
+  );
   lines.push("");
   lines.push("Could you confirm availability and send a quote?");
   lines.push("Thank you.");
@@ -85,5 +87,13 @@ function buildMailto(
   const to = recipientEmail ?? "";
   // Note: URLSearchParams encodes spaces as `+`; mailto clients prefer %20.
   const queryString = params.toString().replace(/\+/g, "%20");
-  return `mailto:${to}?${queryString}`;
+
+  return {
+    houseId: house.houseId,
+    houseName: house.houseName,
+    subject,
+    body,
+    mailto: `mailto:${to}?${queryString}`,
+    itemCount: house.items.length,
+  };
 }

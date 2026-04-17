@@ -39,6 +39,11 @@ export interface GearItem {
   tags: string[];
   isPrimary: boolean;
   blurb: string;
+  /**
+   * Optional product image URL. GearCard falls back to a category-tinted
+   * gradient placeholder if missing or if the image fails to load.
+   */
+  imageUrl?: string | null;
 }
 
 /**

@@ -4,6 +4,8 @@ import { useEffect, useMemo, useState } from "react";
 import { useUser } from "@clerk/nextjs";
 import {
   Check,
+  ChevronDown,
+  ChevronUp,
   Copy,
   Download,
   Link as LinkIcon,
@@ -13,7 +15,7 @@ import {
 } from "lucide-react";
 import { useKit } from "@/lib/kitStore";
 import { buildSnapshot } from "@/lib/kitSnapshot";
-import { allHouseMailtos } from "@/lib/mailto";
+import { allHouseMailtos, type MailtoDraft } from "@/lib/mailto";
 
 interface Props {
   open: boolean;
@@ -29,16 +31,20 @@ export function ExportDialog({ open, onClose }: Props) {
   const [shareUrl, setShareUrl] = useState<string | null>(null);
   const [shareError, setShareError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  const [expandedHouse, setExpandedHouse] = useState<string | null>(null);
+  const [copiedEmailFor, setCopiedEmailFor] = useState<string | null>(null);
 
   useEffect(() => {
     if (!open) {
       setShareUrl(null);
       setShareError(null);
       setCopied(false);
+      setExpandedHouse(null);
+      setCopiedEmailFor(null);
     }
   }, [open]);
 
-  // Keep escape key closing the dialog.
+  // Escape key closes the dialog.
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
@@ -123,6 +129,21 @@ export function ExportDialog({ open, onClose }: Props) {
       setTimeout(() => setCopied(false), 2000);
     } catch {
       // fallback: show the URL so they can copy manually
+    }
+  };
+
+  const handleCopyEmail = async (draft: MailtoDraft) => {
+    const text = `Subject: ${draft.subject}\n\n${draft.body}`;
+    try {
+      await navigator.clipboard.writeText(text);
+      const key = draft.houseId ?? draft.houseName;
+      setCopiedEmailFor(key);
+      setTimeout(
+        () => setCopiedEmailFor((c) => (c === key ? null : c)),
+        2000,
+      );
+    } catch {
+      /* ignore */
     }
   };
 
@@ -246,37 +267,95 @@ export function ExportDialog({ open, onClose }: Props) {
               <h3 className="font-medium">Rental inquiry emails</h3>
             </div>
             <p className="mt-1 text-xs text-neutral-500">
-              Opens your mail client with a pre-filled inquiry per rental
-              house.
+              Expand each house to preview the draft, copy it, or open your
+              mail client with it pre-filled.
             </p>
-            <ul className="mt-3 space-y-1.5">
+            <ul className="mt-3 space-y-2">
               {mailtos.length === 0 ? (
                 <li className="text-xs text-neutral-500">
                   Add items to draft inquiry emails.
                 </li>
               ) : (
-                mailtos.map((m) => (
-                  <li
-                    key={m.houseId ?? m.houseName}
-                    className="flex items-center justify-between rounded border border-neutral-800 bg-neutral-950 px-3 py-2 text-sm"
-                  >
-                    <div>
-                      <div className="font-medium text-neutral-100">
-                        {m.houseName}
-                      </div>
-                      <div className="text-[11px] text-neutral-500">
-                        {m.itemCount} item
-                        {m.itemCount === 1 ? "" : "s"}
-                      </div>
-                    </div>
-                    <a
-                      href={m.mailto}
-                      className="rounded bg-neutral-800 px-2.5 py-1 text-xs text-neutral-100 hover:bg-neutral-700"
+                mailtos.map((m) => {
+                  const key = m.houseId ?? m.houseName;
+                  const expanded = expandedHouse === key;
+                  const copied = copiedEmailFor === key;
+                  return (
+                    <li
+                      key={key}
+                      className="overflow-hidden rounded border border-neutral-800 bg-neutral-950"
                     >
-                      Draft email
-                    </a>
-                  </li>
-                ))
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setExpandedHouse(expanded ? null : key)
+                        }
+                        className="flex w-full items-center justify-between gap-2 px-3 py-2 text-left text-sm hover:bg-neutral-900"
+                      >
+                        <div>
+                          <div className="font-medium text-neutral-100">
+                            {m.houseName}
+                          </div>
+                          <div className="text-[11px] text-neutral-500">
+                            {m.itemCount} item
+                            {m.itemCount === 1 ? "" : "s"}
+                          </div>
+                        </div>
+                        <span className="flex items-center gap-1 text-[11px] text-neutral-400">
+                          {expanded ? "Hide" : "Preview"}
+                          {expanded ? (
+                            <ChevronUp size={14} />
+                          ) : (
+                            <ChevronDown size={14} />
+                          )}
+                        </span>
+                      </button>
+                      {expanded && (
+                        <div className="space-y-2 border-t border-neutral-800 bg-neutral-950 p-3">
+                          <div>
+                            <div className="text-[10px] font-semibold uppercase tracking-wide text-neutral-500">
+                              Subject
+                            </div>
+                            <div className="mt-0.5 text-xs text-neutral-200">
+                              {m.subject}
+                            </div>
+                          </div>
+                          <div>
+                            <div className="text-[10px] font-semibold uppercase tracking-wide text-neutral-500">
+                              Body
+                            </div>
+                            <pre className="mt-0.5 max-h-52 overflow-y-auto whitespace-pre-wrap rounded border border-neutral-800 bg-neutral-900 p-2 font-sans text-[11px] leading-relaxed text-neutral-200">
+{m.body}
+                            </pre>
+                          </div>
+                          <div className="flex items-center justify-end gap-2 pt-1">
+                            <button
+                              type="button"
+                              onClick={() => handleCopyEmail(m)}
+                              className="inline-flex items-center gap-1 rounded bg-neutral-800 px-2.5 py-1 text-[11px] font-medium text-neutral-200 hover:bg-neutral-700"
+                            >
+                              {copied ? (
+                                <>
+                                  <Check size={12} /> Copied
+                                </>
+                              ) : (
+                                <>
+                                  <Copy size={12} /> Copy draft
+                                </>
+                              )}
+                            </button>
+                            <a
+                              href={m.mailto}
+                              className="inline-flex items-center gap-1 rounded bg-accent px-2.5 py-1 text-[11px] font-semibold text-neutral-950 hover:bg-accent-soft"
+                            >
+                              <Mail size={12} /> Draft in mail app
+                            </a>
+                          </div>
+                        </div>
+                      )}
+                    </li>
+                  );
+                })
               )}
             </ul>
           </section>
@@ -287,12 +366,13 @@ export function ExportDialog({ open, onClose }: Props) {
 }
 
 function slug(s: string): string {
-  return s
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "")
-    .slice(0, 40)
-    || "kit";
+  return (
+    s
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "")
+      .slice(0, 40) || "kit"
+  );
 }
 
 function today(): string {

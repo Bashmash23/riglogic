@@ -1,25 +1,26 @@
 "use client";
 
+import { useState } from "react";
 import { Copy, Minus, Plus, Trash2, Sparkles } from "lucide-react";
 import { useKit } from "@/lib/kitStore";
 import { getGear, getHouse } from "@/lib/catalog";
 import { computeRentalDays } from "@/lib/kitSnapshot";
 import type { KitLine } from "@/lib/types";
 import { DateRange } from "./DateRange";
+import { ProjectSwitcher } from "./ProjectSwitcher";
 
 interface Props {
   onStartWithCamera?: () => void;
-  onExportClick?: () => void;
 }
 
-export function KitSidebar({ onStartWithCamera, onExportClick }: Props) {
-  const { kit, setProjectName, removeLine, duplicateLine, setQuantity } =
-    useKit();
+export function KitSidebar({ onStartWithCamera }: Props) {
+  const { kit, removeLine, duplicateLine, setQuantity } = useKit();
 
   const linesWithGear = kit.lines
     .map((line) => ({ line, gear: getGear(line.gearItemId) }))
-    .filter((x): x is { line: KitLine; gear: NonNullable<ReturnType<typeof getGear>> } =>
-      Boolean(x.gear),
+    .filter(
+      (x): x is { line: KitLine; gear: NonNullable<ReturnType<typeof getGear>> } =>
+        Boolean(x.gear),
     );
 
   const perDayTotal = linesWithGear.reduce(
@@ -33,18 +34,9 @@ export function KitSidebar({ onStartWithCamera, onExportClick }: Props) {
 
   return (
     <aside className="flex w-full flex-col border-l border-neutral-800 bg-neutral-950 lg:w-[380px] lg:min-w-[380px]">
-      <div className="border-b border-neutral-800 p-4">
-        <label className="text-xs font-medium uppercase tracking-wide text-neutral-500">
-          Project
-        </label>
-        <input
-          type="text"
-          value={kit.projectName}
-          onChange={(e) => setProjectName(e.target.value)}
-          placeholder="Untitled shoot"
-          className="mt-1 w-full bg-transparent text-lg font-semibold text-neutral-100 placeholder:text-neutral-600 focus:outline-none"
-        />
-        <div className="mt-1 flex items-center justify-between text-xs text-neutral-500">
+      <div className="border-b border-neutral-800 p-4 space-y-3">
+        <ProjectSwitcher />
+        <div className="flex items-center justify-between text-xs text-neutral-500">
           <span>
             {linesWithGear.length}{" "}
             {linesWithGear.length === 1 ? "line" : "lines"}
@@ -53,9 +45,7 @@ export function KitSidebar({ onStartWithCamera, onExportClick }: Props) {
             {linesWithGear.reduce((n, { line }) => n + line.quantity, 0)} pcs
           </span>
         </div>
-        <div className="mt-3">
-          <DateRange />
-        </div>
+        <DateRange />
       </div>
 
       <div className="flex-1 overflow-y-auto">
@@ -67,9 +57,14 @@ export function KitSidebar({ onStartWithCamera, onExportClick }: Props) {
               const house = getHouse(gear.rentalHouseId);
               return (
                 <li key={line.lineId} className="p-3">
-                  <div className="flex items-start justify-between gap-2">
+                  <div className="flex items-start gap-2">
+                    <Thumbnail
+                      src={gear.imageUrl ?? null}
+                      alt={gear.name}
+                      category={gear.category}
+                    />
                     <div className="min-w-0 flex-1">
-                      <div className="text-sm font-medium text-neutral-100 truncate">
+                      <div className="truncate text-sm font-medium text-neutral-100">
                         {gear.name}
                       </div>
                       <div className="text-xs text-neutral-500">
@@ -149,17 +144,53 @@ export function KitSidebar({ onStartWithCamera, onExportClick }: Props) {
         <p className="mt-2 text-[11px] leading-snug text-neutral-500">
           Indicative rates only. Confirm pricing with rental house.
         </p>
-        <button
-          type="button"
-          disabled={isEmpty}
-          onClick={onExportClick}
-          className="mt-3 w-full rounded-md bg-accent px-3 py-2 text-sm font-medium text-neutral-950 hover:bg-accent-soft disabled:cursor-not-allowed disabled:bg-neutral-800 disabled:text-neutral-500 transition-colors"
-          title={isEmpty ? "Add items before exporting" : "Export kit"}
-        >
-          Export &amp; share
-        </button>
       </div>
     </aside>
+  );
+}
+
+const THUMB_GRADIENTS: Record<string, string> = {
+  Cameras: "from-amber-900/60 to-orange-800/50",
+  Lenses: "from-sky-900/60 to-blue-800/50",
+  Lighting: "from-yellow-900/60 to-amber-700/50",
+  Grip: "from-neutral-800/80 to-neutral-700/60",
+  Audio: "from-purple-900/60 to-fuchsia-800/50",
+  Monitoring: "from-emerald-900/60 to-teal-800/50",
+  Power: "from-red-900/60 to-rose-800/50",
+  Media: "from-indigo-900/60 to-violet-800/50",
+  Accessories: "from-stone-800/80 to-zinc-700/60",
+};
+
+function Thumbnail({
+  src,
+  alt,
+  category,
+}: {
+  src: string | null;
+  alt: string;
+  category: string;
+}) {
+  const [failed, setFailed] = useState(false);
+  const gradient =
+    THUMB_GRADIENTS[category] ?? "from-neutral-800 to-neutral-700";
+  const showImage = !!src && !failed;
+  return (
+    <div
+      className={`relative h-10 w-10 shrink-0 overflow-hidden rounded border border-neutral-800 ${
+        showImage ? "bg-neutral-950" : `bg-gradient-to-br ${gradient}`
+      }`}
+    >
+      {showImage ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={src ?? undefined}
+          alt={alt}
+          loading="lazy"
+          onError={() => setFailed(true)}
+          className="h-full w-full object-contain p-0.5"
+        />
+      ) : null}
+    </div>
   );
 }
 
