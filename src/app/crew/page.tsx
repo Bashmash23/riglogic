@@ -1,5 +1,6 @@
 import { CrewWaitlistForm } from "./CrewWaitlistForm";
 import { TopNav } from "@/components/TopNav";
+import { SiteFooter } from "@/components/SiteFooter";
 
 export default function CrewPage() {
   return (
@@ -25,9 +26,7 @@ export default function CrewPage() {
         </div>
       </main>
 
-      <footer className="border-t border-neutral-800 px-8 py-4 text-center text-xs text-neutral-500">
-        RigLogic · UAE only · English only
-      </footer>
+      <SiteFooter />
     </div>
   );
 }

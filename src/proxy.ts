@@ -4,6 +4,9 @@ import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 const isPublicRoute = createRouteMatcher([
   "/",
   "/crew",
+  "/terms", // legal — must be reachable without an account
+  "/privacy", // legal — must be reachable without an account
+  "/listing", // rental-house claim / correction contact page
   "/s/(.*)", // public shared kit view (M3)
   "/api/share/(.*)", // public share-link read API
   "/api/waitlist", // public waitlist capture

@@ -3,6 +3,7 @@ import { Show, SignInButton } from "@clerk/nextjs";
 import { Search, Sparkles, FileText, Link as LinkIcon } from "lucide-react";
 import { HomeProjects } from "./HomeProjects";
 import { TopNav } from "@/components/TopNav";
+import { SiteFooter } from "@/components/SiteFooter";
 
 export default function Home() {
   return (
@@ -137,24 +138,7 @@ export default function Home() {
         </div>
       </section>
 
-      <footer className="border-t border-neutral-800 px-8 py-6 text-center text-xs text-neutral-500">
-        <div className="mx-auto flex max-w-5xl flex-col items-center justify-between gap-2 sm:flex-row">
-          <span>RigLogic · UAE only · English only</span>
-          <span className="flex items-center gap-3">
-            <Link href="/crew" className="hover:text-neutral-300">
-              Crew (soon)
-            </Link>
-            <span className="text-neutral-700">·</span>
-            <a
-              href="#"
-              className="pointer-events-none opacity-50"
-              title="Not implemented on day one"
-            >
-              Privacy
-            </a>
-          </span>
-        </div>
-      </footer>
+      <SiteFooter />
     </div>
   );
 }
