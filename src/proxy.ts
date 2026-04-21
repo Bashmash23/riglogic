@@ -12,7 +12,10 @@ const isPublicRoute = createRouteMatcher([
   "/api/share/(.*)", // public share-link read API
   "/api/waitlist", // public waitlist capture
   "/api/crew", // public GET list of crew
-  "/api/crew/(?!(profile|upload))(.*)", // public GET by slug (exclude profile/upload)
+  // /api/crew/[slug] — the isProtectedCrew matcher below runs
+  // first and will catch /api/crew/profile and /api/crew/upload,
+  // so listing everything else under /api/crew/ here is safe.
+  "/api/crew/(.*)",
   "/robots.txt", // SEO — Google must fetch unauthenticated
   "/sitemap.xml", // SEO — Google must fetch unauthenticated
 ]);
