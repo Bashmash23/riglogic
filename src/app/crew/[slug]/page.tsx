@@ -13,7 +13,6 @@ import {
   Phone,
   MapPin,
   FileDown,
-  ExternalLink,
   Link as LinkIcon,
   Globe,
   Film,
@@ -25,6 +24,7 @@ import {
 import { TopNav } from "@/components/TopNav";
 import { SiteFooter } from "@/components/SiteFooter";
 import { AvailabilityCalendar } from "@/components/AvailabilityCalendar";
+import { PortfolioEmbed } from "@/components/PortfolioEmbed";
 import { shapeProfile } from "@/lib/crewQueries";
 import { prisma } from "@/lib/db";
 import { CREW_PREMIUM_GATE_ENABLED } from "@/lib/crewGate";
@@ -240,27 +240,14 @@ export default async function CrewProfilePage({
             </section>
           )}
 
-        {/* Portfolio */}
+        {/* Portfolio — YouTube / Vimeo URLs render as embedded
+            players; everything else falls back to a link card. */}
         {profile.portfolioLinks.length > 0 && (
           <section className="mt-12">
             <SectionHeading>Portfolio</SectionHeading>
-            <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
+            <div className="mt-3 grid grid-cols-1 gap-4 sm:grid-cols-2">
               {profile.portfolioLinks.map((link, i) => (
-                <a
-                  key={i}
-                  href={link.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group inline-flex items-center justify-between rounded-md border border-neutral-800 bg-neutral-900/60 px-4 py-3 text-sm hover:border-neutral-700"
-                >
-                  <span className="truncate text-neutral-200">
-                    {link.label}
-                  </span>
-                  <ExternalLink
-                    size={12}
-                    className="shrink-0 text-neutral-500 group-hover:text-neutral-300"
-                  />
-                </a>
+                <PortfolioEmbed key={i} link={link} />
               ))}
             </div>
           </section>
