@@ -34,3 +34,40 @@ model WaitlistSignup {
   @@unique([email, source])
   @@index([source, createdAt])
 }
+
+// Public freelancer directory profile. One per Clerk user. Anyone
+// with a Clerk account can create their own profile; viewing a
+// profile is public. Contact/availability fields are gated behind
+// a feature flag (see src/lib/crewGate.ts) so we can flip to
+// Pro-only access later without a schema change.
+model CrewProfile {
+  id                String   @id @default(cuid())
+  userId            String   @unique // Clerk userId
+  slug              String   @unique // URL-safe, derived from displayName
+  displayName       String
+  headline          String?  // one-line subhead under the name, e.g. "DP · Dubai"
+  bio               String?  @db.Text
+  city              String?  // "Dubai", "Abu Dhabi", "Sharjah"…
+  roles             String[] // ["DP", "Camera Op", "Steadicam"]
+  // Public-ish fields — shown on the profile card
+  photoUrl          String?  // Vercel Blob URL, set by /api/crew/upload
+  // Private-ish fields — these are what the Pro gate hides later
+  email             String?
+  phone             String?
+  availabilityText  String?  @db.Text
+  // CV PDF stored in Vercel Blob
+  cvUrl             String?
+  cvFileName        String?
+  // Portfolio = array of { label, url } objects (e.g. Vimeo, IG, Behance)
+  portfolioLinks    Json?    @default("[]")
+  // Socials = { instagram, behance, vimeo, youtube, website, imdb }
+  socialLinks       Json?    @default("{}")
+  // Tier for the future Pro gate. Default free; "pro" flipped by
+  // payment or admin action once billing is wired.
+  tier              String   @default("free")
+  isPublished       Boolean  @default(true)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@index([isPublished, updatedAt])
+}
