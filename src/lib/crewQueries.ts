@@ -31,6 +31,7 @@ type CrewProfileRow = {
   cvFileName: string | null;
   portfolioLinks: unknown;
   socialLinks: unknown;
+  availableDates: string[];
   tier: string;
   isPublished: boolean;
   updatedAt: Date;
@@ -65,6 +66,7 @@ function toPublic(row: CrewProfileRow): CrewProfilePublic {
     photoUrl: row.photoUrl,
     portfolioLinks: parsePortfolioLinks(row.portfolioLinks),
     socialLinks: parseSocialLinks(row.socialLinks),
+    availableDates: row.availableDates ?? [],
     tier: row.tier === "pro" ? "pro" : "free",
     updatedAt: row.updatedAt.toISOString(),
   };

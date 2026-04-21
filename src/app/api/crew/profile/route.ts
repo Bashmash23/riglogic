@@ -69,6 +69,16 @@ function sanitizeInput(body: unknown): CrewProfileInput | null {
       : undefined;
   const isPublished =
     typeof b.isPublished === "boolean" ? b.isPublished : undefined;
+  // Availability: array of YYYY-MM-DD strings. Cap the array
+  // length and validate the date shape so a malicious client
+  // can't shovel arbitrary text into the column.
+  let availableDates: string[] | undefined = undefined;
+  if (Array.isArray(b.availableDates)) {
+    const isoRe = /^\d{4}-\d{2}-\d{2}$/;
+    availableDates = b.availableDates
+      .filter((d): d is string => typeof d === "string" && isoRe.test(d))
+      .slice(0, 366); // hard cap: more than a year of marked days
+  }
   return {
     displayName,
     headline: str(b.headline, 120),
@@ -81,6 +91,7 @@ function sanitizeInput(body: unknown): CrewProfileInput | null {
     portfolioLinks,
     socialLinks,
     isPublished,
+    availableDates,
   };
 }
 
@@ -126,6 +137,7 @@ export async function PUT(req: NextRequest) {
         availabilityText: input.availabilityText ?? null,
         portfolioLinks: (input.portfolioLinks ?? []) as unknown as object,
         socialLinks: (input.socialLinks ?? {}) as unknown as object,
+        availableDates: input.availableDates ?? [],
         // New profiles default to published unless the user
         // explicitly toggled "Hidden" before first save.
         isPublished: input.isPublished ?? true,
@@ -141,6 +153,12 @@ export async function PUT(req: NextRequest) {
         availabilityText: input.availabilityText ?? null,
         portfolioLinks: (input.portfolioLinks ?? []) as unknown as object,
         socialLinks: (input.socialLinks ?? {}) as unknown as object,
+        // Only replace availability when the client sends it, same
+        // pattern as isPublished — protects against partial saves
+        // wiping someone's marked days.
+        ...(input.availableDates !== undefined
+          ? { availableDates: input.availableDates }
+          : {}),
         // Honor explicit visibility toggle from the editor; if the
         // client didn't send the field, leave the existing value
         // unchanged (avoids accidentally re-publishing a hidden

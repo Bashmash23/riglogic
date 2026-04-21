@@ -24,7 +24,8 @@ import {
 } from "lucide-react";
 import { TopNav } from "@/components/TopNav";
 import { SiteFooter } from "@/components/SiteFooter";
-import { getProfileBySlug } from "@/lib/crewQueries";
+import { AvailabilityCalendar } from "@/components/AvailabilityCalendar";
+import { shapeProfile } from "@/lib/crewQueries";
 import { prisma } from "@/lib/db";
 import { CREW_PREMIUM_GATE_ENABLED } from "@/lib/crewGate";
 import type { CrewProfileFull, SocialLinks } from "@/lib/crewTypes";
@@ -93,19 +94,18 @@ export default async function CrewProfilePage({
     }
   }
 
-  const profile = await getProfileBySlug(slug, {
-    userId,
-    tier: viewerTier,
-  });
-  if (!profile) notFound();
+  // Fetch the row directly so we can let the owner view their own
+  // hidden profile (the directory query helper would 404 it).
+  const row = await prisma.crewProfile
+    .findUnique({ where: { slug } })
+    .catch(() => null);
+  if (!row) notFound();
 
-  // Is the viewer the owner of this profile?
-  const ownRow = userId
-    ? await prisma.crewProfile
-        .findUnique({ where: { userId }, select: { slug: true } })
-        .catch(() => null)
-    : null;
-  const isOwner = ownRow?.slug === slug;
+  const isOwner = Boolean(userId && row.userId === userId);
+  // Hidden profiles 404 for everyone except the owner.
+  if (!row.isPublished && !isOwner) notFound();
+
+  const profile = shapeProfile(row, { userId, tier: viewerTier });
 
   // The shape helper already decided whether to include contact
   // fields (runs canViewContactDetails server-side with the real
@@ -137,6 +137,24 @@ export default async function CrewProfilePage({
             </Link>
           )}
         </div>
+
+        {/* Owner-only banner when their profile is hidden — they
+            can still preview it via this page, but it 404s for
+            everyone else. */}
+        {isOwner && !row.isPublished && (
+          <div className="mt-4 flex items-start gap-3 rounded-lg border border-amber-900/50 bg-amber-950/30 px-4 py-3 text-sm text-amber-200">
+            <Lock size={14} className="mt-0.5 shrink-0" />
+            <div>
+              <p className="font-medium">
+                Hidden — only you can see this page
+              </p>
+              <p className="mt-1 text-xs text-amber-200/80">
+                Toggle &ldquo;Visible on /crew&rdquo; in the editor and
+                save to publish.
+              </p>
+            </div>
+          </div>
+        )}
 
         {/* Hero */}
         <section className="mt-6 grid grid-cols-1 gap-8 sm:grid-cols-[240px_1fr]">
@@ -202,6 +220,21 @@ export default async function CrewProfilePage({
             <p className="mt-3 whitespace-pre-line text-sm leading-relaxed text-neutral-300">
               {profile.bio}
             </p>
+          </section>
+        )}
+
+        {/* Availability calendar — read-only public view. Only
+            renders when the freelancer has marked at least one day
+            so we don't show an empty calendar to nobody's benefit. */}
+        {profile.availableDates.length > 0 && (
+          <section className="mt-12">
+            <SectionHeading>Availability</SectionHeading>
+            <div className="mt-3 max-w-md">
+              <AvailabilityCalendar
+                value={profile.availableDates}
+                readOnly
+              />
+            </div>
           </section>
         )}
 

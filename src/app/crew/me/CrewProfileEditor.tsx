@@ -22,6 +22,7 @@ import type {
   PortfolioLink,
   SocialLinks,
 } from "@/lib/crewTypes";
+import { AvailabilityCalendar } from "@/components/AvailabilityCalendar";
 
 interface Props {
   initial: CrewProfileFull | null;
@@ -48,6 +49,9 @@ export function CrewProfileEditor({ initial }: Props) {
   );
   const [socialLinks, setSocialLinks] = useState<SocialLinks>(
     initial?.socialLinks ?? {},
+  );
+  const [availableDates, setAvailableDates] = useState<string[]>(
+    initial?.availableDates ?? [],
   );
 
   // Photo + CV are managed server-side (uploads return URLs that
@@ -113,6 +117,7 @@ export function CrewProfileEditor({ initial }: Props) {
               typeof v === "string" && v.trim().length > 0,
             ),
           ),
+          availableDates,
           isPublished,
         }),
       });
@@ -457,6 +462,17 @@ export function CrewProfileEditor({ initial }: Props) {
             />
           </Field>
         </div>
+      </Section>
+
+      {/* Section: availability calendar */}
+      <Section
+        title="Availability"
+        subtitle="Click days you're free. Productions see this on your public profile so they can plan around your schedule."
+      >
+        <AvailabilityCalendar
+          value={availableDates}
+          onChange={setAvailableDates}
+        />
       </Section>
 
       {/* Section: CV */}

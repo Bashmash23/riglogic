@@ -62,6 +62,10 @@ model CrewProfile {
   portfolioLinks    Json?    @default("[]")
   // Socials = { instagram, behance, vimeo, youtube, website, imdb }
   socialLinks       Json?    @default("{}")
+  // Availability calendar — array of ISO YYYY-MM-DD strings the
+  // freelancer has marked as available. Stored as plain strings
+  // (not Date) so timezone never shifts a day.
+  availableDates    String[] @default([])
   // Tier for the future Pro gate. Default free; "pro" flipped by
   // payment or admin action once billing is wired.
   tier              String   @default("free")

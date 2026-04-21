@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Show, SignInButton, UserButton } from "@clerk/nextjs";
+import { UserCircle2 } from "lucide-react";
 
 // Shared app-wide nav. Used on /, /builder, /crew so a user can always
 // jump anywhere in one click. "Projects" is an anchor on the home page —
@@ -24,8 +25,7 @@ const tabs: Array<{
   {
     label: "Crew",
     href: "/crew",
-    match: (p) => p.startsWith("/crew"),
-    badge: "Soon",
+    match: (p) => p === "/crew" || p.startsWith("/crew/"),
   },
 ];
 
@@ -71,13 +71,33 @@ export function TopNav() {
           </SignInButton>
         </Show>
         <Show when="signed-in">
+          {/* Quick shortcut to the Crew profile editor — shown
+              alongside the builder CTA so freelancers always have
+              a one-click path back to "edit my profile". The
+              UserButton dropdown below also has a custom menu item
+              for the same destination. */}
+          <Link
+            href="/crew/me"
+            className="hidden items-center gap-1.5 rounded-md border border-neutral-800 bg-neutral-900 px-3 py-1.5 text-sm text-neutral-300 hover:border-neutral-700 hover:text-neutral-100 transition-colors sm:inline-flex"
+          >
+            <UserCircle2 size={14} />
+            My profile
+          </Link>
           <Link
             href="/builder"
             className="hidden rounded-md bg-accent px-3 py-1.5 text-sm font-medium text-neutral-950 hover:bg-accent-soft transition-colors sm:inline-block"
           >
             Open builder
           </Link>
-          <UserButton />
+          <UserButton>
+            <UserButton.MenuItems>
+              <UserButton.Link
+                label="My Crew profile"
+                labelIcon={<UserCircle2 size={14} />}
+                href="/crew/me"
+              />
+            </UserButton.MenuItems>
+          </UserButton>
         </Show>
       </div>
     </header>

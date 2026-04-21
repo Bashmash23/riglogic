@@ -18,7 +18,10 @@ export interface SocialLinks {
   linkedin?: string;
 }
 
-/** What a free/public viewer always sees. */
+/** What a free/public viewer always sees. Availability dates are
+ *  treated as public (knowing when someone is free isn't sensitive
+ *  the way contact details are) so productions can use the
+ *  directory itself to plan around schedules. */
 export interface CrewProfilePublic {
   id: string;
   slug: string;
@@ -30,6 +33,8 @@ export interface CrewProfilePublic {
   photoUrl: string | null;
   portfolioLinks: PortfolioLink[];
   socialLinks: SocialLinks;
+  /** ISO YYYY-MM-DD strings the freelancer marked as available. */
+  availableDates: string[];
   tier: "free" | "pro";
   updatedAt: string;
 }
@@ -68,6 +73,9 @@ export interface CrewProfileInput {
   /** When false, the profile is hidden from /crew and 404s on
       /crew/[slug]. Owner can always see + edit. Default true. */
   isPublished?: boolean;
+  /** Replaces the availability set entirely on each save (the
+      editor sends the full current selection). */
+  availableDates?: string[];
 }
 
 export const ALL_ROLES = [
