@@ -11,7 +11,7 @@ import { TopNav } from "@/components/TopNav";
 import { SiteFooter } from "@/components/SiteFooter";
 import { listPublishedProfiles } from "@/lib/crewQueries";
 import { prisma } from "@/lib/db";
-import { CrewCard } from "./components/CrewCard";
+import { CrewDirectoryClient } from "./CrewDirectoryClient";
 
 export const metadata: Metadata = {
   title: "Crew — RigLogic",
@@ -93,7 +93,8 @@ export default async function CrewDirectoryPage() {
         </div>
       </section>
 
-      {/* Grid */}
+      {/* Grid — server renders the full profile list, then the
+          client component takes over for search + filter UX. */}
       <main className="mx-auto w-full max-w-6xl flex-1 px-6 py-12">
         {profiles.length === 0 ? (
           <div className="flex flex-col items-center justify-center rounded-lg border border-dashed border-neutral-800 px-6 py-24 text-center">
@@ -122,15 +123,7 @@ export default async function CrewDirectoryPage() {
             )}
           </div>
         ) : (
-          // Denser 2 / 3 / 4-column grid so each card stays compact
-          // even on wider screens. Was 1 / 2 / 3 which looked right
-          // when the directory was empty but oversized once real
-          // photos started loading.
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-            {profiles.map((profile) => (
-              <CrewCard key={profile.id} profile={profile} />
-            ))}
-          </div>
+          <CrewDirectoryClient profiles={profiles} />
         )}
       </main>
 
