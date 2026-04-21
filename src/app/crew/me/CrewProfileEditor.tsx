@@ -557,13 +557,17 @@ function VisibilityToggle({
         role="switch"
         aria-checked={value}
         onClick={() => onChange(!value)}
-        className={`relative h-6 w-11 shrink-0 rounded-full transition-colors ${
+        className={`relative inline-flex h-6 w-11 shrink-0 items-center rounded-full transition-colors ${
           value ? "bg-accent" : "bg-neutral-700"
         }`}
       >
+        {/* Knob: 20px wide inside a 44px track. With 2px inset on
+            both ends the knob sits flush at left (translate-x-0.5
+            => 2px) when off and flush at right (translate-x-[22px]
+            => 44 - 20 - 2 = 22px) when on. */}
         <span
-          className={`absolute top-0.5 h-5 w-5 rounded-full bg-neutral-100 shadow transition-transform ${
-            value ? "translate-x-5" : "translate-x-0.5"
+          className={`inline-block h-5 w-5 rounded-full bg-neutral-100 shadow transition-transform ${
+            value ? "translate-x-[22px]" : "translate-x-0.5"
           }`}
         />
       </button>
