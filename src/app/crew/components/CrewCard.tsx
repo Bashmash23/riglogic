@@ -13,10 +13,11 @@ export function CrewCard({ profile }: { profile: CrewProfilePublic }) {
       href={`/crew/${profile.slug}`}
       className="group flex flex-col overflow-hidden rounded-lg border border-neutral-800 bg-neutral-900/60 transition-colors hover:border-neutral-700"
     >
-      {/* Photo — hero top of the card, square aspect for visual
-          consistency in the grid regardless of portrait/landscape
-          originals. */}
-      <div className="relative aspect-[4/3] w-full overflow-hidden bg-neutral-950">
+      {/* Photo — flatter 16:9 cinematic strip. Was aspect-[4/3]
+          which felt too tall on single-column mobile and at lg
+          width. Combined with the denser grid below this gives a
+          tighter Behance-style row. */}
+      <div className="relative aspect-video w-full overflow-hidden bg-neutral-950">
         {profile.photoUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img

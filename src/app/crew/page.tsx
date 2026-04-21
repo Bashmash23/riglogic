@@ -122,7 +122,11 @@ export default async function CrewDirectoryPage() {
             )}
           </div>
         ) : (
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {/* Denser 2 / 3 / 4-column grid so each card stays
+              compact even on wider screens. Was 1 / 2 / 3 — looked
+              right when the directory was empty but oversized
+              once real photos started loading. */}
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
             {profiles.map((profile) => (
               <CrewCard key={profile.id} profile={profile} />
             ))}
