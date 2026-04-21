@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Show, SignInButton, UserButton } from "@clerk/nextjs";
 import { UserCircle2 } from "lucide-react";
+import { ShortlistNavLink } from "./ShortlistNavLink";
 
 // Shared app-wide nav. Used on /, /builder, /crew so a user can always
 // jump anywhere in one click. "Projects" is an anchor on the home page —
@@ -63,6 +64,10 @@ export function TopNav() {
         </nav>
       </div>
       <div className="flex items-center gap-3">
+        {/* Shortlist access shown to everyone — signed in or not —
+            because the shortlist lives in localStorage. Self-hides
+            when the list is empty. */}
+        <ShortlistNavLink />
         <Show when="signed-out">
           <SignInButton mode="modal">
             <button className="text-sm text-neutral-300 hover:text-neutral-100">

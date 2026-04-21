@@ -25,6 +25,7 @@ import { TopNav } from "@/components/TopNav";
 import { SiteFooter } from "@/components/SiteFooter";
 import { AvailabilityCalendar } from "@/components/AvailabilityCalendar";
 import { PortfolioEmbed } from "@/components/PortfolioEmbed";
+import { ShortlistButton } from "../components/ShortlistButton";
 import { shapeProfile } from "@/lib/crewQueries";
 import { prisma } from "@/lib/db";
 import { CREW_PREMIUM_GATE_ENABLED } from "@/lib/crewGate";
@@ -127,15 +128,23 @@ export default async function CrewProfilePage({
             <ArrowLeft size={12} />
             All crew
           </Link>
-          {isOwner && (
-            <Link
-              href="/crew/me"
-              className="inline-flex items-center gap-1 rounded-md border border-neutral-800 bg-neutral-900 px-3 py-1.5 text-xs text-neutral-300 hover:border-neutral-700"
-            >
-              <Pencil size={11} />
-              Edit your profile
-            </Link>
-          )}
+          <div className="flex items-center gap-2">
+            {/* Shortlist pill — always visible; productions browsing
+                crew save favourites directly from the profile page
+                without needing to sign in (localStorage). Own
+                profile hides it since there's no point saving
+                yourself. */}
+            {!isOwner && <ShortlistButton slug={slug} variant="pill" />}
+            {isOwner && (
+              <Link
+                href="/crew/me"
+                className="inline-flex items-center gap-1 rounded-md border border-neutral-800 bg-neutral-900 px-3 py-1.5 text-xs text-neutral-300 hover:border-neutral-700"
+              >
+                <Pencil size={11} />
+                Edit your profile
+              </Link>
+            )}
+          </div>
         </div>
 
         {/* Owner-only banner when their profile is hidden — they

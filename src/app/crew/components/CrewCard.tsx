@@ -5,6 +5,7 @@
 import Link from "next/link";
 import { MapPin } from "lucide-react";
 import type { CrewProfilePublic } from "@/lib/crewTypes";
+import { ShortlistButton } from "./ShortlistButton";
 
 export function CrewCard({ profile }: { profile: CrewProfilePublic }) {
   const primaryRole = profile.roles[0] ?? null;
@@ -30,10 +31,17 @@ export function CrewCard({ profile }: { profile: CrewProfilePublic }) {
           <InitialsAvatar name={profile.displayName} />
         )}
         {profile.tier === "pro" && (
-          <span className="absolute top-3 right-3 rounded-full bg-accent px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-neutral-950">
+          <span className="absolute top-2 left-2 rounded-full bg-accent px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-neutral-950">
             Pro
           </span>
         )}
+        {/* Shortlist overlay — sits on the card's photo corner so
+            it's one click to save without leaving the grid. The
+            button stops click propagation so the surrounding
+            <Link> doesn't also fire. */}
+        <div className="absolute top-2 right-2">
+          <ShortlistButton slug={profile.slug} variant="icon" />
+        </div>
       </div>
       <div className="flex flex-1 flex-col gap-3 p-4">
         <div>
