@@ -150,12 +150,11 @@ export function CrewProfileEditor({ initial }: Props) {
   };
 
   const uploadFile = async (kind: "photo" | "cv", file: File) => {
-    if (!hasProfile) {
-      setUploadError(
-        "Save your profile once first, then you can upload files.",
-      );
-      return;
-    }
+    // Note: no `hasProfile` check here anymore — the upload API
+    // auto-creates a hidden stub row on first call so people can
+    // upload before they've ever saved. After a successful upload
+    // we set hasProfile=true so other UI affordances behave like
+    // they would after a normal save.
     setUploadError(null);
     if (kind === "photo") setPhotoBusy(true);
     else setCvBusy(true);
@@ -197,6 +196,11 @@ export function CrewProfileEditor({ initial }: Props) {
         setCvUrl(data.url);
         setCvFileName(data.cvFileName ?? file.name);
       }
+      // The upload may have just created a hidden stub row.
+      // Mirror the post-save state so the editor knows a profile
+      // now exists in the DB (affects Save button copy and any
+      // other "first save" UX in the future).
+      setHasProfile(true);
     } catch {
       setUploadError("Upload failed. Try again.");
     } finally {
@@ -251,7 +255,7 @@ export function CrewProfileEditor({ initial }: Props) {
             busy={photoBusy}
             onFile={(f) => uploadFile("photo", f)}
             onClear={() => setPhotoUrl(null)}
-            canUpload={hasProfile}
+            canUpload={true}
           />
           <div className="flex flex-1 flex-col gap-4">
             <Field label="Full name" required>
@@ -469,7 +473,7 @@ export function CrewProfileEditor({ initial }: Props) {
             setCvUrl(null);
             setCvFileName(null);
           }}
-          canUpload={hasProfile}
+          canUpload={true}
         />
       </Section>
 
@@ -698,11 +702,6 @@ function PhotoUpload({
           }}
         />
       </label>
-      {!canUpload && (
-        <p className="text-center text-[11px] text-neutral-500">
-          Save once, then upload.
-        </p>
-      )}
       {url && (
         <button
           type="button"
@@ -780,11 +779,6 @@ function CvUpload({
           }}
         />
       </label>
-      {!canUpload && (
-        <p className="text-[11px] text-neutral-500">
-          Save your profile once, then you can upload a CV.
-        </p>
-      )}
     </div>
   );
 }

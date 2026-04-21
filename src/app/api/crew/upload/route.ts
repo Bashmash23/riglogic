@@ -16,11 +16,19 @@
 // Requires BLOB_READ_WRITE_TOKEN env var. If missing the route
 // returns a clear 503 so the UI can show "file storage not
 // configured" instead of a cryptic error.
+//
+// First-upload-before-save behaviour: if the user uploads a photo
+// or CV before they've ever saved their profile, this endpoint
+// auto-creates a hidden stub row so the blob has somewhere to
+// attach. The stub stays isPublished=false so it never leaks to
+// the public directory; the user's first real Save fills in their
+// fields and (via the visibility toggle default) flips it public.
 
 import { NextRequest, NextResponse } from "next/server";
-import { auth } from "@clerk/nextjs/server";
+import { auth, currentUser } from "@clerk/nextjs/server";
 import { put } from "@vercel/blob";
 import { prisma } from "@/lib/db";
+import { slugify, slugifyWithSuffix } from "@/lib/crewSlug";
 
 export const dynamic = "force-dynamic";
 // Allow a slightly larger body for CV uploads.
@@ -105,20 +113,39 @@ export async function POST(req: NextRequest) {
       contentType: file.type,
     });
 
-    // Ensure the CrewProfile row exists before updating; if the
-    // user uploaded a photo before creating their profile, we
-    // bail so they hit the editor first.
+    // Ensure a CrewProfile row exists. If the user is uploading
+    // before their first explicit Save, create a hidden stub now
+    // so the blob has somewhere to attach. We pull a sensible
+    // default name from Clerk so the editor doesn't show "" — the
+    // user will overwrite it before clicking Save anyway.
     const existing = await prisma.crewProfile.findUnique({
       where: { userId },
     });
     if (!existing) {
-      return NextResponse.json(
-        {
-          error: "no_profile_yet",
-          hint: "Create your profile first, then upload.",
+      const user = await currentUser().catch(() => null);
+      const clerkName =
+        [user?.firstName, user?.lastName].filter(Boolean).join(" ") ||
+        user?.username ||
+        "Crew member";
+      // Slug collision handling matches the PUT route — try the
+      // clean slug first, fall back to suffixed.
+      const baseSlug = slugify(clerkName);
+      const collision = await prisma.crewProfile.findUnique({
+        where: { slug: baseSlug },
+      });
+      const slug = collision ? slugifyWithSuffix(clerkName) : baseSlug;
+      await prisma.crewProfile.create({
+        data: {
+          userId,
+          slug,
+          displayName: clerkName,
+          // Stays hidden until the user explicitly saves with the
+          // visibility toggle on. Prevents half-baked profiles
+          // from leaking into /crew before the user has a chance
+          // to fill them in.
+          isPublished: false,
         },
-        { status: 409 },
-      );
+      });
     }
 
     if (kind === "photo") {
