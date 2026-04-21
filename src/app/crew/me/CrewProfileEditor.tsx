@@ -6,7 +6,7 @@
 // in one shot.
 
 import { useRouter } from "next/navigation";
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import {
   Check,
   Eye,
@@ -24,6 +24,7 @@ import type {
 } from "@/lib/crewTypes";
 import { AvailabilityCalendar } from "@/components/AvailabilityCalendar";
 import { CompletenessNudge } from "./CompletenessNudge";
+import { SmartBackLink } from "@/components/SmartBackLink";
 
 interface Props {
   initial: CrewProfileFull | null;
@@ -89,6 +90,53 @@ export function CrewProfileEditor({ initial }: Props) {
   // photo + CV buttons stay disabled forever after first save.
   const [hasProfile, setHasProfile] = useState<boolean>(Boolean(initial));
 
+  // "Dirty" = at least one text/roles/portfolio/social field has
+  // been edited since last successful save. We use this to prompt
+  // before back-navigation + closing the tab. Photo + CV uploads
+  // aren't counted because they save to the DB immediately, so
+  // there's nothing to "lose" if the user navigates away.
+  const [isDirty, setIsDirty] = useState(false);
+  // Tiny helper that wraps a setter so any onChange both updates
+  // the value and flags dirty. Avoids sprinkling setIsDirty(true)
+  // through every onChange handler.
+  const dirtyify = useCallback(
+    <T,>(setter: (v: T) => void) =>
+      (v: T) => {
+        setter(v);
+        setIsDirty(true);
+      },
+    [],
+  );
+
+  // Browser-level guard: fires for closing the tab, refresh, or
+  // the browser's own back button. Adds only while dirty so users
+  // don't get nagged when there's nothing to lose.
+  useEffect(() => {
+    if (!isDirty) return;
+    const handler = (e: BeforeUnloadEvent) => {
+      e.preventDefault();
+      // Legacy string required for some browsers to show the
+      // native confirm. Content is ignored by modern ones.
+      e.returnValue = "";
+    };
+    window.addEventListener("beforeunload", handler);
+    return () => window.removeEventListener("beforeunload", handler);
+  }, [isDirty]);
+
+  // In-app back navigation guard — reused by the SmartBackLink at
+  // the top of the form. Returning false cancels navigation.
+  const confirmLeaveIfDirty = useCallback(() => {
+    if (!isDirty) return true;
+    return window.confirm(
+      "You have unsaved changes. Leave without saving?",
+    );
+  }, [isDirty]);
+
+  // Tiny helper: wraps a setter call so the dirty flag flips true
+  // on every user edit. Used on every onChange below so we don't
+  // have to remember setIsDirty(true) at each one.
+  const touch = useCallback(() => setIsDirty(true), []);
+
   const canSave = useMemo(
     () => displayName.trim().length > 0 && saveState !== "saving",
     [displayName, saveState],
@@ -151,6 +199,9 @@ export function CrewProfileEditor({ initial }: Props) {
       // Once a row exists, photo + CV uploads are unlocked even
       // though the server-rendered `initial` prop is still null.
       setHasProfile(true);
+      // All current edits are persisted — clear the dirty flag so
+      // the back/close guards stop nagging.
+      setIsDirty(false);
       setSaveMessage(
         data.profile.isPublished
           ? `Saved. Public at /crew/${data.profile.slug}`
@@ -229,19 +280,25 @@ export function CrewProfileEditor({ initial }: Props) {
     setRoles((prev) =>
       prev.includes(role) ? prev.filter((r) => r !== role) : [...prev, role],
     );
+    touch();
   };
 
   const updateLink = (i: number, field: keyof PortfolioLink, v: string) => {
     setPortfolioLinks((prev) =>
       prev.map((l, idx) => (idx === i ? { ...l, [field]: v } : l)),
     );
+    touch();
   };
 
-  const removeLink = (i: number) =>
+  const removeLink = (i: number) => {
     setPortfolioLinks((prev) => prev.filter((_, idx) => idx !== i));
+    touch();
+  };
 
-  const addLink = () =>
+  const addLink = () => {
     setPortfolioLinks((prev) => [...prev, { label: "", url: "" }]);
+    touch();
+  };
 
   // ------- render ------------------------------------------------------
 
@@ -253,6 +310,11 @@ export function CrewProfileEditor({ initial }: Props) {
         saveProfile();
       }}
     >
+      {/* Back link — confirms before leaving if there are unsaved
+          changes. beforeunload handles the browser Back button +
+          tab close separately. */}
+      <SmartBackLink fallback="/crew" onBeforeBack={confirmLeaveIfDirty} />
+
       {/* Live profile-completeness score — LinkedIn-style. Updates
           as the user types. Lives at the very top so it's the
           first thing visible after scrolling into the form. */}
@@ -277,7 +339,7 @@ export function CrewProfileEditor({ initial }: Props) {
           except the owner. */}
       <VisibilityToggle
         value={isPublished}
-        onChange={setIsPublished}
+        onChange={(v) => { setIsPublished(v); touch(); }}
         hasSavedBefore={hasProfile}
       />
 
@@ -296,7 +358,7 @@ export function CrewProfileEditor({ initial }: Props) {
               <input
                 type="text"
                 value={displayName}
-                onChange={(e) => setDisplayName(e.target.value)}
+                onChange={(e) => { setDisplayName(e.target.value); touch(); }}
                 placeholder="e.g. Sara El-Masri"
                 maxLength={80}
                 className={inputClass}
@@ -306,7 +368,7 @@ export function CrewProfileEditor({ initial }: Props) {
               <input
                 type="text"
                 value={headline}
-                onChange={(e) => setHeadline(e.target.value)}
+                onChange={(e) => { setHeadline(e.target.value); touch(); }}
                 placeholder="e.g. Freelance DP · Dubai"
                 maxLength={120}
                 className={inputClass}
@@ -316,7 +378,7 @@ export function CrewProfileEditor({ initial }: Props) {
               <input
                 type="text"
                 value={city}
-                onChange={(e) => setCity(e.target.value)}
+                onChange={(e) => { setCity(e.target.value); touch(); }}
                 placeholder="Dubai"
                 maxLength={60}
                 className={inputClass}
@@ -356,7 +418,7 @@ export function CrewProfileEditor({ initial }: Props) {
       <Section title="Bio">
         <textarea
           value={bio}
-          onChange={(e) => setBio(e.target.value)}
+          onChange={(e) => { setBio(e.target.value); touch(); }}
           placeholder="A few sentences about your work. What you shoot, who you've worked with, what you bring to set."
           rows={6}
           maxLength={2000}
@@ -417,37 +479,37 @@ export function CrewProfileEditor({ initial }: Props) {
           <SocialField
             label="Website"
             value={socialLinks.website ?? ""}
-            onChange={(v) => setSocialLinks({ ...socialLinks, website: v })}
+            onChange={(v) => { setSocialLinks({ ...socialLinks, website: v }); touch(); }}
           />
           <SocialField
             label="Instagram"
             value={socialLinks.instagram ?? ""}
-            onChange={(v) => setSocialLinks({ ...socialLinks, instagram: v })}
+            onChange={(v) => { setSocialLinks({ ...socialLinks, instagram: v }); touch(); }}
           />
           <SocialField
             label="Behance"
             value={socialLinks.behance ?? ""}
-            onChange={(v) => setSocialLinks({ ...socialLinks, behance: v })}
+            onChange={(v) => { setSocialLinks({ ...socialLinks, behance: v }); touch(); }}
           />
           <SocialField
             label="Vimeo"
             value={socialLinks.vimeo ?? ""}
-            onChange={(v) => setSocialLinks({ ...socialLinks, vimeo: v })}
+            onChange={(v) => { setSocialLinks({ ...socialLinks, vimeo: v }); touch(); }}
           />
           <SocialField
             label="YouTube"
             value={socialLinks.youtube ?? ""}
-            onChange={(v) => setSocialLinks({ ...socialLinks, youtube: v })}
+            onChange={(v) => { setSocialLinks({ ...socialLinks, youtube: v }); touch(); }}
           />
           <SocialField
             label="IMDb"
             value={socialLinks.imdb ?? ""}
-            onChange={(v) => setSocialLinks({ ...socialLinks, imdb: v })}
+            onChange={(v) => { setSocialLinks({ ...socialLinks, imdb: v }); touch(); }}
           />
           <SocialField
             label="LinkedIn"
             value={socialLinks.linkedin ?? ""}
-            onChange={(v) => setSocialLinks({ ...socialLinks, linkedin: v })}
+            onChange={(v) => { setSocialLinks({ ...socialLinks, linkedin: v }); touch(); }}
           />
         </div>
       </Section>
@@ -462,7 +524,7 @@ export function CrewProfileEditor({ initial }: Props) {
             <input
               type="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => { setEmail(e.target.value); touch(); }}
               placeholder="you@example.com"
               maxLength={120}
               className={inputClass}
@@ -472,7 +534,7 @@ export function CrewProfileEditor({ initial }: Props) {
             <input
               type="tel"
               value={phone}
-              onChange={(e) => setPhone(e.target.value)}
+              onChange={(e) => { setPhone(e.target.value); touch(); }}
               placeholder="+971 50 …"
               maxLength={30}
               className={inputClass}
@@ -483,7 +545,7 @@ export function CrewProfileEditor({ initial }: Props) {
           <Field label="Availability note">
             <textarea
               value={availabilityText}
-              onChange={(e) => setAvailabilityText(e.target.value)}
+              onChange={(e) => { setAvailabilityText(e.target.value); touch(); }}
               placeholder="e.g. Based in Dubai. Open for commercials, music videos, features. Day rate on request."
               rows={3}
               maxLength={1000}
@@ -504,12 +566,12 @@ export function CrewProfileEditor({ initial }: Props) {
         <div className="space-y-4">
           <ShowOnProfileToggle
             value={showAvailabilityCalendar}
-            onChange={setShowAvailabilityCalendar}
+            onChange={(v) => { setShowAvailabilityCalendar(v); touch(); }}
           />
           {showAvailabilityCalendar && (
             <AvailabilityCalendar
               value={availableDates}
-              onChange={setAvailableDates}
+              onChange={(v) => { setAvailableDates(v); touch(); }}
             />
           )}
         </div>

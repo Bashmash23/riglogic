@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { TopNav } from "@/components/TopNav";
 import { SiteFooter } from "@/components/SiteFooter";
+import { SmartBackLink } from "@/components/SmartBackLink";
 
 export const metadata: Metadata = {
   title: "Privacy Policy — RigLogic",
@@ -16,7 +17,8 @@ export default function PrivacyPage() {
     <div className="flex flex-1 flex-col">
       <TopNav />
       <main className="mx-auto w-full max-w-3xl px-6 py-16 text-neutral-200">
-        <h1 className="text-3xl font-semibold tracking-tight">
+        <SmartBackLink fallback="/" />
+        <h1 className="mt-4 text-3xl font-semibold tracking-tight">
           Privacy Policy
         </h1>
         <p className="mt-2 text-sm text-neutral-500">

@@ -7,7 +7,8 @@
 // the page.tsx renders <CrewCard/> server-side too — this
 // component only replaces the interactive grid once hydrated.
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { Search, X, ChevronDown, MapPin, CalendarCheck } from "lucide-react";
 import { ALL_ROLES } from "@/lib/crewTypes";
 import type { CrewProfilePublic } from "@/lib/crewTypes";
@@ -18,11 +19,41 @@ interface Props {
 }
 
 export function CrewDirectoryClient({ profiles }: Props) {
-  const [query, setQuery] = useState("");
-  const [selectedRole, setSelectedRole] = useState<string | null>(null);
-  const [city, setCity] = useState("");
-  const [availableThisMonth, setAvailableThisMonth] = useState(false);
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  // Initial state comes from the URL so:
+  //   - Bookmarking a filtered directory works
+  //   - Clicking a profile then hitting Back preserves filters
+  //   - Direct-linking a filter combo is possible (share, marketing)
+  const [query, setQuery] = useState(() => searchParams?.get("q") ?? "");
+  const [selectedRole, setSelectedRole] = useState<string | null>(
+    () => searchParams?.get("role") ?? null,
+  );
+  const [city, setCity] = useState(() => searchParams?.get("city") ?? "");
+  const [availableThisMonth, setAvailableThisMonth] = useState(
+    () => searchParams?.get("av") === "1",
+  );
   const [roleMenuOpen, setRoleMenuOpen] = useState(false);
+
+  // Sync filter state back to URL on every change. router.replace
+  // doesn't push a new history entry, so hitting Back from a
+  // profile returns the user to the filtered grid state as one
+  // step rather than requiring multiple back-presses.
+  useEffect(() => {
+    const sp = new URLSearchParams();
+    if (query) sp.set("q", query);
+    if (selectedRole) sp.set("role", selectedRole);
+    if (city) sp.set("city", city);
+    if (availableThisMonth) sp.set("av", "1");
+    const qs = sp.toString();
+    const target = qs ? `${pathname}?${qs}` : pathname;
+    router.replace(target, { scroll: false });
+    // pathname/router are stable; we intentionally depend only on
+    // filter values so this runs once per change.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [query, selectedRole, city, availableThisMonth]);
 
   // Pre-compute the set of cities actually in the data so the
   // city filter autocompletes to real values rather than making

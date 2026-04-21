@@ -17,7 +17,6 @@ import {
   Globe,
   Film,
   Briefcase,
-  ArrowLeft,
   Pencil,
   Lock,
 } from "lucide-react";
@@ -25,6 +24,7 @@ import { TopNav } from "@/components/TopNav";
 import { SiteFooter } from "@/components/SiteFooter";
 import { AvailabilityCalendar } from "@/components/AvailabilityCalendar";
 import { PortfolioEmbed } from "@/components/PortfolioEmbed";
+import { SmartBackLink } from "@/components/SmartBackLink";
 import { ShortlistButton } from "../components/ShortlistButton";
 import { shapeProfile } from "@/lib/crewQueries";
 import { prisma } from "@/lib/db";
@@ -121,13 +121,7 @@ export default async function CrewProfilePage({
 
       <main className="mx-auto w-full max-w-5xl flex-1 px-6 py-8">
         <div className="flex items-center justify-between">
-          <Link
-            href="/crew"
-            className="inline-flex items-center gap-1 text-xs text-neutral-400 hover:text-neutral-200"
-          >
-            <ArrowLeft size={12} />
-            All crew
-          </Link>
+          <SmartBackLink fallback="/crew" label="Back" />
           <div className="flex items-center gap-2">
             {/* Shortlist pill — always visible; productions browsing
                 crew save favourites directly from the profile page

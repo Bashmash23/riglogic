@@ -7,6 +7,7 @@
 import type { Metadata } from "next";
 import { TopNav } from "@/components/TopNav";
 import { SiteFooter } from "@/components/SiteFooter";
+import { SmartBackLink } from "@/components/SmartBackLink";
 import { ShortlistClient } from "./ShortlistClient";
 
 export const metadata: Metadata = {
@@ -21,7 +22,8 @@ export default function ShortlistPage() {
     <div className="flex flex-1 flex-col">
       <TopNav />
       <main className="mx-auto w-full max-w-5xl flex-1 px-6 py-12">
-        <div className="flex items-start justify-between">
+        <SmartBackLink fallback="/crew" />
+        <div className="mt-4 flex items-start justify-between">
           <div>
             <h1 className="text-3xl font-semibold tracking-tight">
               My shortlist
