@@ -12,6 +12,7 @@ import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/db";
 import { getOwnProfile } from "@/lib/crewQueries";
 import { slugify, slugifyWithSuffix } from "@/lib/crewSlug";
+import { checkProfanity } from "@/lib/profanityCheck";
 import type { CrewProfileInput, PortfolioLink, SocialLinks } from "@/lib/crewTypes";
 
 export const dynamic = "force-dynamic";
@@ -110,6 +111,33 @@ export async function PUT(req: NextRequest) {
   if (!input) {
     return NextResponse.json(
       { error: "invalid_input" },
+      { status: 400 },
+    );
+  }
+  // Profanity / slur check on every user-authored text field. URL
+  // fields (socialLinks) are intentionally excluded because many
+  // legitimate domains contain substrings that match the filter.
+  // The check returns the *names* of failed fields so the client
+  // can highlight them — we don't quote the matched word back.
+  const profanity = checkProfanity({
+    "your name": input.displayName,
+    headline: input.headline,
+    bio: input.bio,
+    city: input.city,
+    "availability note": input.availabilityText,
+    ...Object.fromEntries(
+      (input.portfolioLinks ?? []).map((l, i) => [
+        `portfolio link #${i + 1}`,
+        l.label,
+      ]),
+    ),
+  });
+  if (!profanity.clean) {
+    return NextResponse.json(
+      {
+        error: "profanity_detected",
+        fields: profanity.flaggedFields,
+      },
       { status: 400 },
     );
   }

@@ -129,13 +129,19 @@ export function CrewProfileEditor({ initial }: Props) {
       if (!res.ok) {
         const data = (await res.json().catch(() => ({}))) as {
           error?: string;
+          fields?: string[];
         };
         setSaveState("error");
-        setSaveMessage(
-          data.error === "invalid_input"
-            ? "Check the required fields."
-            : "Couldn't save. Try again.",
-        );
+        if (data.error === "profanity_detected" && data.fields?.length) {
+          const list = data.fields.join(", ");
+          setSaveMessage(
+            `Your ${list} contains language that isn't allowed. Please revise to keep the directory professional.`,
+          );
+        } else if (data.error === "invalid_input") {
+          setSaveMessage("Check the required fields.");
+        } else {
+          setSaveMessage("Couldn't save. Try again.");
+        }
         return;
       }
       const data = (await res.json()) as {
