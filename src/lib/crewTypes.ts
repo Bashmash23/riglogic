@@ -43,8 +43,15 @@ export interface CrewProfileContact {
   cvFileName: string | null;
 }
 
-/** Full profile object as returned to owner / Pro viewer. */
-export type CrewProfileFull = CrewProfilePublic & CrewProfileContact;
+/** Full profile object as returned to owner / Pro viewer. The
+ *  `isPublished` flag is included so the owner's editor can show
+ *  the current visibility state — listings already filter by it
+ *  server-side so other viewers never see this field on hidden
+ *  profiles. */
+export type CrewProfileFull = CrewProfilePublic &
+  CrewProfileContact & {
+    isPublished: boolean;
+  };
 
 /** Input shape accepted by the profile write API. */
 export interface CrewProfileInput {
@@ -58,6 +65,9 @@ export interface CrewProfileInput {
   availabilityText?: string;
   portfolioLinks?: PortfolioLink[];
   socialLinks?: SocialLinks;
+  /** When false, the profile is hidden from /crew and 404s on
+      /crew/[slug]. Owner can always see + edit. Default true. */
+  isPublished?: boolean;
 }
 
 export const ALL_ROLES = [

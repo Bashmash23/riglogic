@@ -7,7 +7,15 @@
 
 import { useRouter } from "next/navigation";
 import { useMemo, useState } from "react";
-import { Check, Loader2, Trash2, Upload, X } from "lucide-react";
+import {
+  Check,
+  Eye,
+  EyeOff,
+  Loader2,
+  Trash2,
+  Upload,
+  X,
+} from "lucide-react";
 import { ALL_ROLES } from "@/lib/crewTypes";
 import type {
   CrewProfileFull,
@@ -59,6 +67,20 @@ export function CrewProfileEditor({ initial }: Props) {
   const [saveState, setSaveState] = useState<SaveState>("idle");
   const [saveMessage, setSaveMessage] = useState<string | null>(null);
 
+  // Visibility toggle. Default: published. The current value is
+  // sent on every save so flipping the switch and clicking Save
+  // immediately updates the public directory.
+  const [isPublished, setIsPublished] = useState<boolean>(
+    initial?.isPublished ?? true,
+  );
+
+  // After the very first successful save we know a row exists in
+  // the DB, so the upload endpoints will accept files. The server-
+  // rendered `initial` prop stays null in this client component
+  // even after `router.refresh()` — without this local flag the
+  // photo + CV buttons stay disabled forever after first save.
+  const [hasProfile, setHasProfile] = useState<boolean>(Boolean(initial));
+
   const canSave = useMemo(
     () => displayName.trim().length > 0 && saveState !== "saving",
     [displayName, saveState],
@@ -91,6 +113,7 @@ export function CrewProfileEditor({ initial }: Props) {
               typeof v === "string" && v.trim().length > 0,
             ),
           ),
+          isPublished,
         }),
       });
       if (!res.ok) {
@@ -105,9 +128,18 @@ export function CrewProfileEditor({ initial }: Props) {
         );
         return;
       }
-      const data = (await res.json()) as { profile: { slug: string } };
+      const data = (await res.json()) as {
+        profile: { slug: string; isPublished: boolean };
+      };
       setSaveState("saved");
-      setSaveMessage(`Saved. Public at /crew/${data.profile.slug}`);
+      // Once a row exists, photo + CV uploads are unlocked even
+      // though the server-rendered `initial` prop is still null.
+      setHasProfile(true);
+      setSaveMessage(
+        data.profile.isPublished
+          ? `Saved. Public at /crew/${data.profile.slug}`
+          : `Saved as hidden. Toggle visible to list on /crew.`,
+      );
       // Refresh so the next edit reads from the updated DB row
       // (slug may have been generated on first save).
       router.refresh();
@@ -118,7 +150,7 @@ export function CrewProfileEditor({ initial }: Props) {
   };
 
   const uploadFile = async (kind: "photo" | "cv", file: File) => {
-    if (!initial && (kind === "photo" || kind === "cv")) {
+    if (!hasProfile) {
       setUploadError(
         "Save your profile once first, then you can upload files.",
       );
@@ -201,6 +233,16 @@ export function CrewProfileEditor({ initial }: Props) {
         saveProfile();
       }}
     >
+      {/* Visibility toggle — sits at the top so freelancers see it
+          before scrolling. Hidden profiles are excluded from the
+          public /crew grid AND 404 on /crew/[slug] for everyone
+          except the owner. */}
+      <VisibilityToggle
+        value={isPublished}
+        onChange={setIsPublished}
+        hasSavedBefore={hasProfile}
+      />
+
       {/* Section: photo + identity */}
       <Section title="Identity">
         <div className="flex flex-col gap-6 sm:flex-row sm:items-start">
@@ -209,7 +251,7 @@ export function CrewProfileEditor({ initial }: Props) {
             busy={photoBusy}
             onFile={(f) => uploadFile("photo", f)}
             onClear={() => setPhotoUrl(null)}
-            canUpload={Boolean(initial)}
+            canUpload={hasProfile}
           />
           <div className="flex flex-1 flex-col gap-4">
             <Field label="Full name" required>
@@ -427,7 +469,7 @@ export function CrewProfileEditor({ initial }: Props) {
             setCvUrl(null);
             setCvFileName(null);
           }}
-          canUpload={Boolean(initial)}
+          canUpload={hasProfile}
         />
       </Section>
 
@@ -480,6 +522,54 @@ export function CrewProfileEditor({ initial }: Props) {
 }
 
 // -------- small building blocks ------------------------------------
+
+function VisibilityToggle({
+  value,
+  onChange,
+  hasSavedBefore,
+}: {
+  value: boolean;
+  onChange: (v: boolean) => void;
+  hasSavedBefore: boolean;
+}) {
+  return (
+    <div className="flex items-start justify-between gap-4 rounded-lg border border-neutral-800 bg-neutral-900/40 p-4">
+      <div>
+        <div className="flex items-center gap-2">
+          {value ? (
+            <Eye size={14} className="text-accent" />
+          ) : (
+            <EyeOff size={14} className="text-neutral-500" />
+          )}
+          <span className="text-sm font-medium text-neutral-100">
+            {value ? "Visible on /crew" : "Hidden from /crew"}
+          </span>
+        </div>
+        <p className="mt-1 max-w-md text-xs text-neutral-500">
+          {value
+            ? "Your profile shows up in the public directory and on its own page. Anyone can find you."
+            : "Your profile is saved but no one else can see it. Toggle on whenever you're ready."}
+          {!hasSavedBefore && " Save once for the toggle to take effect."}
+        </p>
+      </div>
+      <button
+        type="button"
+        role="switch"
+        aria-checked={value}
+        onClick={() => onChange(!value)}
+        className={`relative h-6 w-11 shrink-0 rounded-full transition-colors ${
+          value ? "bg-accent" : "bg-neutral-700"
+        }`}
+      >
+        <span
+          className={`absolute top-0.5 h-5 w-5 rounded-full bg-neutral-100 shadow transition-transform ${
+            value ? "translate-x-5" : "translate-x-0.5"
+          }`}
+        />
+      </button>
+    </div>
+  );
+}
 
 const inputClass =
   "w-full rounded-md border border-neutral-800 bg-neutral-900 px-3 py-2 text-sm text-neutral-100 placeholder:text-neutral-500 focus:outline-none focus:border-accent";

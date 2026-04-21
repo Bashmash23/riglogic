@@ -67,6 +67,8 @@ function sanitizeInput(body: unknown): CrewProfileInput | null {
     typeof b.socialLinks === "object" && b.socialLinks !== null
       ? (b.socialLinks as SocialLinks)
       : undefined;
+  const isPublished =
+    typeof b.isPublished === "boolean" ? b.isPublished : undefined;
   return {
     displayName,
     headline: str(b.headline, 120),
@@ -78,6 +80,7 @@ function sanitizeInput(body: unknown): CrewProfileInput | null {
     availabilityText: str(b.availabilityText, 1000),
     portfolioLinks,
     socialLinks,
+    isPublished,
   };
 }
 
@@ -123,6 +126,9 @@ export async function PUT(req: NextRequest) {
         availabilityText: input.availabilityText ?? null,
         portfolioLinks: (input.portfolioLinks ?? []) as unknown as object,
         socialLinks: (input.socialLinks ?? {}) as unknown as object,
+        // New profiles default to published unless the user
+        // explicitly toggled "Hidden" before first save.
+        isPublished: input.isPublished ?? true,
       },
       update: {
         displayName: input.displayName,
@@ -135,10 +141,18 @@ export async function PUT(req: NextRequest) {
         availabilityText: input.availabilityText ?? null,
         portfolioLinks: (input.portfolioLinks ?? []) as unknown as object,
         socialLinks: (input.socialLinks ?? {}) as unknown as object,
-        isPublished: true,
+        // Honor explicit visibility toggle from the editor; if the
+        // client didn't send the field, leave the existing value
+        // unchanged (avoids accidentally re-publishing a hidden
+        // profile when the user just edits text).
+        ...(input.isPublished !== undefined
+          ? { isPublished: input.isPublished }
+          : {}),
       },
     });
-    return NextResponse.json({ profile: { slug: row.slug } });
+    return NextResponse.json({
+      profile: { slug: row.slug, isPublished: row.isPublished },
+    });
   } catch (err) {
     console.error("PUT /api/crew/profile failed", err);
     return NextResponse.json(

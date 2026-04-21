@@ -32,6 +32,7 @@ type CrewProfileRow = {
   portfolioLinks: unknown;
   socialLinks: unknown;
   tier: string;
+  isPublished: boolean;
   updatedAt: Date;
 };
 
@@ -86,6 +87,7 @@ export function shapeProfile(
     availabilityText: row.availabilityText,
     cvUrl: row.cvUrl,
     cvFileName: row.cvFileName,
+    isPublished: row.isPublished,
   };
   return full;
 }
