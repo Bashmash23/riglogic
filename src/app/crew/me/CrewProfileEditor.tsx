@@ -23,6 +23,7 @@ import type {
   SocialLinks,
 } from "@/lib/crewTypes";
 import { AvailabilityCalendar } from "@/components/AvailabilityCalendar";
+import { CompletenessNudge } from "./CompletenessNudge";
 
 interface Props {
   initial: CrewProfileFull | null;
@@ -246,6 +247,24 @@ export function CrewProfileEditor({ initial }: Props) {
         saveProfile();
       }}
     >
+      {/* Live profile-completeness score — LinkedIn-style. Updates
+          as the user types. Lives at the very top so it's the
+          first thing visible after scrolling into the form. */}
+      <CompletenessNudge
+        displayName={displayName}
+        headline={headline}
+        bio={bio}
+        city={city}
+        roles={roles}
+        email={email}
+        phone={phone}
+        portfolioLinks={portfolioLinks}
+        socialLinks={socialLinks}
+        photoUrl={photoUrl}
+        cvUrl={cvUrl}
+        showAvailabilityCalendar={showAvailabilityCalendar}
+      />
+
       {/* Visibility toggle — sits at the top so freelancers see it
           before scrolling. Hidden profiles are excluded from the
           public /crew grid AND 404 on /crew/[slug] for everyone
