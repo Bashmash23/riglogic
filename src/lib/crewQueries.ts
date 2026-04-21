@@ -32,6 +32,7 @@ type CrewProfileRow = {
   portfolioLinks: unknown;
   socialLinks: unknown;
   availableDates: string[];
+  showAvailabilityCalendar: boolean;
   tier: string;
   isPublished: boolean;
   updatedAt: Date;
@@ -67,6 +68,7 @@ function toPublic(row: CrewProfileRow): CrewProfilePublic {
     portfolioLinks: parsePortfolioLinks(row.portfolioLinks),
     socialLinks: parseSocialLinks(row.socialLinks),
     availableDates: row.availableDates ?? [],
+    showAvailabilityCalendar: row.showAvailabilityCalendar ?? false,
     tier: row.tier === "pro" ? "pro" : "free",
     updatedAt: row.updatedAt.toISOString(),
   };

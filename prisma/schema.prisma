@@ -66,6 +66,11 @@ model CrewProfile {
   // freelancer has marked as available. Stored as plain strings
   // (not Date) so timezone never shifts a day.
   availableDates    String[] @default([])
+  // Opt-in flag for showing the calendar on the public profile.
+  // Default off so a freelancer can experiment with marking days
+  // without anything appearing publicly until they explicitly
+  // flip the switch.
+  showAvailabilityCalendar Boolean @default(false)
   // Tier for the future Pro gate. Default free; "pro" flipped by
   // payment or admin action once billing is wired.
   tier              String   @default("free")

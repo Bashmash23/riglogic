@@ -35,6 +35,10 @@ export interface CrewProfilePublic {
   socialLinks: SocialLinks;
   /** ISO YYYY-MM-DD strings the freelancer marked as available. */
   availableDates: string[];
+  /** When false, the public profile hides the calendar entirely
+   *  even if availableDates is non-empty. Lets freelancers
+   *  experiment with marking days privately. */
+  showAvailabilityCalendar: boolean;
   tier: "free" | "pro";
   updatedAt: string;
 }
@@ -76,6 +80,8 @@ export interface CrewProfileInput {
   /** Replaces the availability set entirely on each save (the
       editor sends the full current selection). */
   availableDates?: string[];
+  /** When false, hide the calendar on the public profile. */
+  showAvailabilityCalendar?: boolean;
 }
 
 export const ALL_ROLES = [

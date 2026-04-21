@@ -53,6 +53,9 @@ export function CrewProfileEditor({ initial }: Props) {
   const [availableDates, setAvailableDates] = useState<string[]>(
     initial?.availableDates ?? [],
   );
+  const [showAvailabilityCalendar, setShowAvailabilityCalendar] = useState(
+    initial?.showAvailabilityCalendar ?? false,
+  );
 
   // Photo + CV are managed server-side (uploads return URLs that
   // are saved to the row immediately). Local state here mirrors
@@ -118,6 +121,7 @@ export function CrewProfileEditor({ initial }: Props) {
             ),
           ),
           availableDates,
+          showAvailabilityCalendar,
           isPublished,
         }),
       });
@@ -464,15 +468,26 @@ export function CrewProfileEditor({ initial }: Props) {
         </div>
       </Section>
 
-      {/* Section: availability calendar */}
+      {/* Section: availability calendar — opt-in. Default off so
+          freelancers experiment with marking days privately. The
+          toggle here controls visibility on the public profile;
+          the calendar itself is always editable below. */}
       <Section
         title="Availability"
-        subtitle="Click days you're free. Productions see this on your public profile so they can plan around your schedule."
+        subtitle="Optional. Mark days you're free, and choose whether productions can see this on your public profile."
       >
-        <AvailabilityCalendar
-          value={availableDates}
-          onChange={setAvailableDates}
-        />
+        <div className="space-y-4">
+          <ShowOnProfileToggle
+            value={showAvailabilityCalendar}
+            onChange={setShowAvailabilityCalendar}
+          />
+          {showAvailabilityCalendar && (
+            <AvailabilityCalendar
+              value={availableDates}
+              onChange={setAvailableDates}
+            />
+          )}
+        </div>
       </Section>
 
       {/* Section: CV */}
@@ -542,6 +557,44 @@ export function CrewProfileEditor({ initial }: Props) {
 }
 
 // -------- small building blocks ------------------------------------
+
+function ShowOnProfileToggle({
+  value,
+  onChange,
+}: {
+  value: boolean;
+  onChange: (v: boolean) => void;
+}) {
+  return (
+    <label className="flex cursor-pointer items-center justify-between gap-4 rounded-md border border-neutral-800 bg-neutral-900/40 p-3">
+      <div>
+        <div className="text-xs font-medium text-neutral-200">
+          Show calendar on my profile
+        </div>
+        <p className="mt-0.5 text-[11px] text-neutral-500">
+          {value
+            ? "Productions will see your availability calendar on your public profile."
+            : "Off — calendar stays private. You can still mark days for your own reference."}
+        </p>
+      </div>
+      <button
+        type="button"
+        role="switch"
+        aria-checked={value}
+        onClick={() => onChange(!value)}
+        className={`relative inline-flex h-5 w-9 shrink-0 items-center rounded-full transition-colors ${
+          value ? "bg-accent" : "bg-neutral-700"
+        }`}
+      >
+        <span
+          className={`inline-block h-4 w-4 rounded-full bg-neutral-100 shadow transition-transform ${
+            value ? "translate-x-[18px]" : "translate-x-0.5"
+          }`}
+        />
+      </button>
+    </label>
+  );
+}
 
 function VisibilityToggle({
   value,

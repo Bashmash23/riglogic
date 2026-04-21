@@ -79,6 +79,10 @@ function sanitizeInput(body: unknown): CrewProfileInput | null {
       .filter((d): d is string => typeof d === "string" && isoRe.test(d))
       .slice(0, 366); // hard cap: more than a year of marked days
   }
+  const showAvailabilityCalendar =
+    typeof b.showAvailabilityCalendar === "boolean"
+      ? b.showAvailabilityCalendar
+      : undefined;
   return {
     displayName,
     headline: str(b.headline, 120),
@@ -92,6 +96,7 @@ function sanitizeInput(body: unknown): CrewProfileInput | null {
     socialLinks,
     isPublished,
     availableDates,
+    showAvailabilityCalendar,
   };
 }
 
@@ -138,6 +143,7 @@ export async function PUT(req: NextRequest) {
         portfolioLinks: (input.portfolioLinks ?? []) as unknown as object,
         socialLinks: (input.socialLinks ?? {}) as unknown as object,
         availableDates: input.availableDates ?? [],
+        showAvailabilityCalendar: input.showAvailabilityCalendar ?? false,
         // New profiles default to published unless the user
         // explicitly toggled "Hidden" before first save.
         isPublished: input.isPublished ?? true,
@@ -158,6 +164,9 @@ export async function PUT(req: NextRequest) {
         // wiping someone's marked days.
         ...(input.availableDates !== undefined
           ? { availableDates: input.availableDates }
+          : {}),
+        ...(input.showAvailabilityCalendar !== undefined
+          ? { showAvailabilityCalendar: input.showAvailabilityCalendar }
           : {}),
         // Honor explicit visibility toggle from the editor; if the
         // client didn't send the field, leave the existing value

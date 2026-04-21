@@ -115,36 +115,39 @@ export function AvailabilityCalendar({
   ).length;
 
   return (
-    <div className="rounded-lg border border-neutral-800 bg-neutral-900/40 p-4">
+    // Compact width by default — 280px feels right for both editor
+    // and read-only profile use. Caller can override with a wider
+    // wrapper if needed.
+    <div className="w-full max-w-[280px] rounded-lg border border-neutral-800 bg-neutral-900/40 p-3">
       <div className="flex items-center justify-between">
         <button
           type="button"
           onClick={prevMonth}
-          className="rounded-md p-1 text-neutral-400 hover:bg-neutral-800 hover:text-neutral-200"
+          className="rounded-md p-0.5 text-neutral-400 hover:bg-neutral-800 hover:text-neutral-200"
           aria-label="Previous month"
         >
-          <ChevronLeft size={16} />
+          <ChevronLeft size={14} />
         </button>
-        <div className="text-sm font-medium text-neutral-100">
+        <div className="text-xs font-medium text-neutral-100">
           {MONTH_NAMES[month]} {year}
         </div>
         <button
           type="button"
           onClick={nextMonth}
-          className="rounded-md p-1 text-neutral-400 hover:bg-neutral-800 hover:text-neutral-200"
+          className="rounded-md p-0.5 text-neutral-400 hover:bg-neutral-800 hover:text-neutral-200"
           aria-label="Next month"
         >
-          <ChevronRight size={16} />
+          <ChevronRight size={14} />
         </button>
       </div>
 
-      <div className="mt-4 grid grid-cols-7 gap-1 text-center text-[10px] font-medium uppercase tracking-wider text-neutral-500">
+      <div className="mt-2 grid grid-cols-7 gap-0.5 text-center text-[9px] font-medium uppercase tracking-wider text-neutral-500">
         {WEEKDAY_LABELS.map((w) => (
           <div key={w}>{w}</div>
         ))}
       </div>
 
-      <div className="mt-1 grid grid-cols-7 gap-1">
+      <div className="mt-0.5 grid grid-cols-7 gap-0.5">
         {cells.map((cell, i) =>
           cell === null ? (
             <div key={`empty-${i}`} className="aspect-square" />
@@ -163,20 +166,18 @@ export function AvailabilityCalendar({
         )}
       </div>
 
-      <div className="mt-4 flex items-center justify-between text-[11px] text-neutral-500">
+      <div className="mt-2 flex items-center justify-between text-[10px] text-neutral-500">
         {readOnly ? (
           <span>
             {markedThisMonth > 0
-              ? `${markedThisMonth} day${markedThisMonth === 1 ? "" : "s"} available this month`
-              : "No availability marked for this month"}
+              ? `${markedThisMonth} day${markedThisMonth === 1 ? "" : "s"} this month`
+              : "No availability"}
           </span>
         ) : (
-          <span>
-            Click days to toggle. Past days are locked.
-          </span>
+          <span>Click days to toggle</span>
         )}
-        <span className="inline-flex items-center gap-1.5">
-          <span className="h-2.5 w-2.5 rounded-sm bg-accent" />
+        <span className="inline-flex items-center gap-1">
+          <span className="h-2 w-2 rounded-sm bg-accent" />
           Available
         </span>
       </div>
@@ -201,7 +202,7 @@ function DayCell({
   onClick: () => void;
 }) {
   const base =
-    "aspect-square flex items-center justify-center rounded-md text-xs transition-colors";
+    "aspect-square flex items-center justify-center rounded text-[10px] transition-colors";
   if (isAvailable) {
     return (
       <button

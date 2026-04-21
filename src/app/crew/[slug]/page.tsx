@@ -223,20 +223,22 @@ export default async function CrewProfilePage({
           </section>
         )}
 
-        {/* Availability calendar — read-only public view. Only
-            renders when the freelancer has marked at least one day
-            so we don't show an empty calendar to nobody's benefit. */}
-        {profile.availableDates.length > 0 && (
-          <section className="mt-12">
-            <SectionHeading>Availability</SectionHeading>
-            <div className="mt-3 max-w-md">
-              <AvailabilityCalendar
-                value={profile.availableDates}
-                readOnly
-              />
-            </div>
-          </section>
-        )}
+        {/* Availability calendar — read-only public view. Renders
+            only when (a) the owner opted in via the editor toggle
+            and (b) they actually have days marked. The component
+            self-constrains to a compact 280px width. */}
+        {profile.showAvailabilityCalendar &&
+          profile.availableDates.length > 0 && (
+            <section className="mt-12">
+              <SectionHeading>Availability</SectionHeading>
+              <div className="mt-3">
+                <AvailabilityCalendar
+                  value={profile.availableDates}
+                  readOnly
+                />
+              </div>
+            </section>
+          )}
 
         {/* Portfolio */}
         {profile.portfolioLinks.length > 0 && (
