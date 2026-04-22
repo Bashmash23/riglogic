@@ -79,11 +79,17 @@ export function SmartBackLink({
   const onClick = useCallback(
     async (e: React.MouseEvent) => {
       if (onBeforeBack) {
+        // preventDefault must run synchronously in the click
+        // handler — if we wait for an async confirm() first, the
+        // browser has already started navigating by the time the
+        // Promise resolves. So we always cancel default here and
+        // manually navigate only when the check passes.
+        e.preventDefault();
         const ok = await onBeforeBack();
-        if (!ok) {
-          e.preventDefault();
-          return;
-        }
+        if (!ok) return;
+        if (hasHistory) router.back();
+        else router.push(fallback);
+        return;
       }
       if (hasHistory) {
         e.preventDefault();
@@ -91,7 +97,7 @@ export function SmartBackLink({
       }
       // Else: the default <Link> navigation to fallback runs.
     },
-    [hasHistory, onBeforeBack, router],
+    [hasHistory, onBeforeBack, router, fallback],
   );
 
   const base =
