@@ -1,0 +1,150 @@
+"use client";
+
+// Modernised homepage hero — animated gradient, kinetic headline,
+// subtle grid overlay. Replaces the plain centred headline.
+//
+// Everything below the hero stays server-rendered in page.tsx so
+// the rest of the landing page still gets SEO-friendly HTML.
+
+import Link from "next/link";
+import { motion } from "framer-motion";
+import { Show, SignInButton } from "@clerk/nextjs";
+import { ArrowRight } from "lucide-react";
+
+const words = ["UAE productions", "UAE crews", "UAE shoots"];
+
+export function HomeHero() {
+  return (
+    <section className="relative overflow-hidden border-b border-neutral-800">
+      {/* Animated gradient backdrop. Two soft accent blobs that
+          drift slowly. All GPU-accelerated (transform + opacity)
+          so this shouldn't hurt performance. */}
+      <motion.div
+        aria-hidden
+        className="pointer-events-none absolute -left-24 top-[-20%] h-[500px] w-[500px] rounded-full bg-accent/10 blur-3xl"
+        animate={{ x: [0, 80, 0], y: [0, 40, 0] }}
+        transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
+      />
+      <motion.div
+        aria-hidden
+        className="pointer-events-none absolute -right-32 bottom-[-20%] h-[500px] w-[500px] rounded-full bg-indigo-500/10 blur-3xl"
+        animate={{ x: [0, -60, 0], y: [0, -30, 0] }}
+        transition={{ duration: 22, repeat: Infinity, ease: "easeInOut" }}
+      />
+      {/* Subtle grid overlay — faint dots. 2px mask so the
+          background colour shows through between points. */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 opacity-[0.04]"
+        style={{
+          backgroundImage:
+            "radial-gradient(circle, rgb(255 255 255) 1px, transparent 1px)",
+          backgroundSize: "24px 24px",
+        }}
+      />
+
+      <div className="relative mx-auto flex max-w-5xl flex-col items-center px-6 py-28 text-center sm:py-36">
+        <motion.span
+          initial={{ opacity: 0, y: -8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="mb-8 inline-flex items-center gap-2 rounded-full border border-neutral-800 bg-neutral-900/70 px-3 py-1 text-xs text-neutral-400 backdrop-blur"
+        >
+          <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400" />
+          UAE · Free to use · Film &amp; video production
+        </motion.span>
+
+        <motion.h1
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.1 }}
+          className="max-w-4xl text-5xl font-semibold leading-[1.05] tracking-tight text-neutral-100 sm:text-7xl"
+        >
+          The smart gear list for{" "}
+          <KineticWord words={words} />
+          <span className="text-accent">.</span>
+        </motion.h1>
+
+        <motion.p
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.25 }}
+          className="mt-8 max-w-xl text-lg leading-relaxed text-neutral-400"
+        >
+          Build a kit once. Share it with anyone. Rent it anywhere.
+          Plus a free directory of UAE freelance crew.
+        </motion.p>
+
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+          className="mt-12 flex flex-col gap-3 sm:flex-row"
+        >
+          <Show when="signed-out">
+            <SignInButton mode="modal">
+              <button className="group inline-flex items-center gap-2 rounded-md bg-accent px-6 py-3 text-base font-medium text-neutral-950 transition-colors hover:bg-accent-soft">
+                Start building
+                <ArrowRight
+                  size={16}
+                  className="transition-transform group-hover:translate-x-0.5"
+                />
+              </button>
+            </SignInButton>
+          </Show>
+          <Show when="signed-in">
+            <Link
+              href="/builder"
+              className="group inline-flex items-center gap-2 rounded-md bg-accent px-6 py-3 text-base font-medium text-neutral-950 transition-colors hover:bg-accent-soft"
+            >
+              Open the builder
+              <ArrowRight
+                size={16}
+                className="transition-transform group-hover:translate-x-0.5"
+              />
+            </Link>
+          </Show>
+          <Link
+            href="/crew"
+            className="inline-flex items-center gap-2 rounded-md border border-neutral-800 bg-neutral-900/70 px-6 py-3 text-base text-neutral-200 backdrop-blur transition-colors hover:border-neutral-700"
+          >
+            Browse crew
+          </Link>
+        </motion.div>
+
+        <p className="mt-10 text-xs text-neutral-500">
+          Indicative rates only. Confirm pricing with rental house.
+        </p>
+      </div>
+    </section>
+  );
+}
+
+/** Cycles through words with a soft cross-fade — draws the eye
+ *  without feeling like a slot machine. */
+function KineticWord({ words }: { words: string[] }) {
+  return (
+    <span className="relative inline-block align-top">
+      <span className="invisible whitespace-nowrap">{words[0]}</span>
+      <span className="absolute inset-0 whitespace-nowrap">
+        {words.map((w, i) => (
+          <motion.span
+            key={w}
+            className="absolute inset-0 text-accent"
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: [0, 1, 1, 0], y: [12, 0, 0, -12] }}
+            transition={{
+              duration: words.length * 2.4,
+              delay: i * 2.4,
+              repeat: Infinity,
+              ease: "easeInOut",
+              times: [0, 0.08, 0.92 / words.length, 1 / words.length],
+            }}
+          >
+            {w}
+          </motion.span>
+        ))}
+      </span>
+    </span>
+  );
+}
