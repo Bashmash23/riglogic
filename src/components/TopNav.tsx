@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { Show, SignInButton, UserButton } from "@clerk/nextjs";
 import { UserCircle2 } from "lucide-react";
 import { ShortlistNavLink } from "./ShortlistNavLink";
+import { CommandPaletteButton } from "./CommandPalette";
 
 // Shared app-wide nav. Used on /, /builder, /crew so a user can always
 // jump anywhere in one click. "Projects" is an anchor on the home page —
@@ -64,6 +65,9 @@ export function TopNav() {
         </nav>
       </div>
       <div className="flex items-center gap-3">
+        {/* Cmd+K palette trigger — hidden on mobile (keyboard
+            shortcut is the primary path on desktop anyway). */}
+        <CommandPaletteButton />
         {/* Shortlist access shown to everyone — signed in or not —
             because the shortlist lives in localStorage. Self-hides
             when the list is empty. */}

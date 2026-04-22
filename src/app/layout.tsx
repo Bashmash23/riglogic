@@ -4,6 +4,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { Analytics } from "@vercel/analytics/next";
 import { Toaster } from "sonner";
 import { ConfirmDialogHost } from "@/components/ConfirmDialog";
+import { CommandPalette } from "@/components/CommandPalette";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -47,6 +48,9 @@ export default function RootLayout({
           {/* Imperative confirm() dialog host — replaces the native
               browser confirm with a styled Radix AlertDialog. */}
           <ConfirmDialogHost />
+          {/* Global Cmd+K palette. Mounted once so the shortcut
+              works from any page. */}
+          <CommandPalette />
           <Analytics />
         </body>
       </html>
