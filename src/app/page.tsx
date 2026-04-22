@@ -50,16 +50,31 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Screenshot placeholder strip */}
+      {/* Styled photography strip — film-production visuals from
+          Unsplash with a dark gradient overlay so the labels stay
+          legible and the tones stay on-brand. Swap any `src` for
+          your own URL whenever you have better photography. */}
       <section className="px-6 py-16">
         <div className="mx-auto max-w-5xl">
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-            <ScreenshotBlock label="Kit builder" tint="from-amber-900/30" />
+            <ScreenshotBlock
+              label="Kit builder"
+              tint="from-amber-900/60"
+              src="https://images.unsplash.com/photo-1502920917128-1aa500764cbd?w=1200&auto=format&fit=crop&q=80"
+              alt="Camera gear laid out on a studio bench"
+            />
             <ScreenshotBlock
               label="Smart-Match suggestions"
-              tint="from-sky-900/30"
+              tint="from-sky-900/60"
+              src="https://images.unsplash.com/photo-1485846234645-a62644f84728?w=1200&auto=format&fit=crop&q=80"
+              alt="Director of photography behind a cinema camera"
             />
-            <ScreenshotBlock label="Shareable kit" tint="from-emerald-900/30" />
+            <ScreenshotBlock
+              label="Shareable kit"
+              tint="from-emerald-900/60"
+              src="https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?w=1200&auto=format&fit=crop&q=80"
+              alt="Film crew collaborating on set"
+            />
           </div>
           <p className="mt-3 text-center text-[11px] text-neutral-600">
             Product preview — real screenshots ship with the public launch.
@@ -140,12 +155,38 @@ function StepCard({
   );
 }
 
-function ScreenshotBlock({ label, tint }: { label: string; tint: string }) {
+function ScreenshotBlock({
+  label,
+  tint,
+  src,
+  alt,
+}: {
+  label: string;
+  tint: string;
+  src?: string;
+  alt?: string;
+}) {
   return (
     <div
-      className={`aspect-[4/3] rounded-lg border border-neutral-800 bg-gradient-to-br ${tint} to-neutral-950 flex items-center justify-center`}
+      className={`group relative aspect-[4/3] overflow-hidden rounded-lg border border-neutral-800 bg-gradient-to-br ${tint} to-neutral-950`}
     >
-      <span className="rounded-full border border-neutral-800 bg-neutral-950/80 px-3 py-1 text-[11px] uppercase tracking-wider text-neutral-400 flex items-center gap-1.5">
+      {src && (
+        // Raw <img> because we're hotlinking external Unsplash URLs
+        // and don't want to route them through next/image's remote-
+        // pattern allowlist. loading="lazy" keeps the initial
+        // paint fast.
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={src}
+          alt={alt ?? label}
+          loading="lazy"
+          className="absolute inset-0 h-full w-full object-cover opacity-80 transition-all duration-700 group-hover:scale-105 group-hover:opacity-100"
+        />
+      )}
+      {/* Gradient overlay darkens the bottom third so the label
+          pill reads cleanly regardless of the photo underneath. */}
+      <div className="absolute inset-0 bg-gradient-to-t from-neutral-950/90 via-neutral-950/30 to-transparent" />
+      <span className="absolute bottom-4 left-1/2 flex -translate-x-1/2 items-center gap-1.5 rounded-full border border-neutral-800 bg-neutral-950/80 px-3 py-1 text-[11px] uppercase tracking-wider text-neutral-300 backdrop-blur">
         <LinkIcon size={11} />
         {label}
       </span>
