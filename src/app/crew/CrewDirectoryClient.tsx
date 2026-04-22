@@ -9,10 +9,20 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { motion } from "framer-motion";
 import { Search, X, ChevronDown, MapPin, CalendarCheck } from "lucide-react";
 import { ALL_ROLES } from "@/lib/crewTypes";
 import type { CrewProfilePublic } from "@/lib/crewTypes";
 import { CrewCard } from "./components/CrewCard";
+
+// Stagger container: children animate in one after another. Small
+// delay between so 10+ cards don't feel jittery.
+const gridVariants = {
+  hidden: {},
+  visible: {
+    transition: { staggerChildren: 0.04 },
+  },
+};
 
 interface Props {
   profiles: CrewProfilePublic[];
@@ -279,11 +289,19 @@ export function CrewDirectoryClient({ profiles }: Props) {
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+          <motion.div
+            variants={gridVariants}
+            initial="hidden"
+            animate="visible"
+            className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4"
+            // `key` keyed on the filter fingerprint so changing
+            // filters replays the stagger — feels responsive.
+            key={`${query}-${selectedRole}-${city}-${availableThisMonth}`}
+          >
             {filtered.map((p) => (
               <CrewCard key={p.id} profile={p} />
             ))}
-          </div>
+          </motion.div>
         )}
       </div>
     </div>

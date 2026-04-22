@@ -1,92 +1,112 @@
+"use client";
+
 // Single freelancer card in the /crew directory grid. Behance-style:
 // large photo on top, name + headline below, role chips at the
 // bottom. Whole card links to the public profile.
+//
+// Wrapped in framer-motion so:
+//   - Initial mount fades + lifts into view (grid parent controls
+//     stagger).
+//   - Hover subtly lifts the card with a soft shadow. Image itself
+//     still scales via CSS transition for smoothness.
 
 import Link from "next/link";
+import { motion } from "framer-motion";
 import { MapPin } from "lucide-react";
 import type { CrewProfilePublic } from "@/lib/crewTypes";
 import { ShortlistButton } from "./ShortlistButton";
 
+export const cardMotionVariants = {
+  hidden: { opacity: 0, y: 16 },
+  visible: { opacity: 1, y: 0 },
+} as const;
+
 export function CrewCard({ profile }: { profile: CrewProfilePublic }) {
   const primaryRole = profile.roles[0] ?? null;
   return (
-    <Link
-      href={`/crew/${profile.slug}`}
-      className="group flex flex-col overflow-hidden rounded-lg border border-neutral-800 bg-neutral-900/60 transition-colors hover:border-neutral-700"
+    <motion.div
+      variants={cardMotionVariants}
+      whileHover={{ y: -4 }}
+      transition={{ type: "spring", stiffness: 260, damping: 22 }}
     >
-      {/* Photo — flatter 16:9 cinematic strip. Was aspect-[4/3]
-          which felt too tall on single-column mobile and at lg
-          width. Combined with the denser grid below this gives a
-          tighter Behance-style row. */}
-      <div className="relative aspect-video w-full overflow-hidden bg-neutral-950">
-        {profile.photoUrl ? (
-          // eslint-disable-next-line @next/next/no-img-element
-          <img
-            src={profile.photoUrl}
-            alt={profile.displayName}
-            loading="lazy"
-            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-          />
-        ) : (
-          <InitialsAvatar name={profile.displayName} />
-        )}
-        {profile.tier === "pro" && (
-          <span className="absolute top-2 left-2 rounded-full bg-accent px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-neutral-950">
-            Pro
-          </span>
-        )}
-        {/* Shortlist overlay — sits on the card's photo corner so
-            it's one click to save without leaving the grid. The
-            button stops click propagation so the surrounding
-            <Link> doesn't also fire. */}
-        <div className="absolute top-2 right-2">
-          <ShortlistButton slug={profile.slug} variant="icon" />
-        </div>
-      </div>
-      <div className="flex flex-1 flex-col gap-3 p-4">
-        <div>
-          <h3 className="truncate text-base font-medium text-neutral-100">
-            {profile.displayName}
-          </h3>
-          {profile.headline && (
-            <p className="mt-0.5 truncate text-sm text-neutral-400">
-              {profile.headline}
-            </p>
+      <Link
+        href={`/crew/${profile.slug}`}
+        className="group flex h-full flex-col overflow-hidden rounded-lg border border-neutral-800 bg-neutral-900/60 transition-colors hover:border-neutral-700 hover:shadow-lg hover:shadow-black/30"
+      >
+        {/* Photo — flatter 16:9 cinematic strip. Was aspect-[4/3]
+            which felt too tall on single-column mobile and at lg
+            width. Combined with the denser grid below this gives
+            a tighter Behance-style row. */}
+        <div className="relative aspect-video w-full overflow-hidden bg-neutral-950">
+          {profile.photoUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              src={profile.photoUrl}
+              alt={profile.displayName}
+              loading="lazy"
+              className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+            />
+          ) : (
+            <InitialsAvatar name={profile.displayName} />
           )}
-          {(profile.city || primaryRole) && (
-            <div className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-neutral-500">
-              {profile.city && (
-                <span className="inline-flex items-center gap-1">
-                  <MapPin size={11} />
-                  {profile.city}
+          {profile.tier === "pro" && (
+            <span className="absolute top-2 left-2 rounded-full bg-accent px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-neutral-950">
+              Pro
+            </span>
+          )}
+          {/* Shortlist overlay — sits on the card's photo corner so
+              it's one click to save without leaving the grid. The
+              button stops click propagation so the surrounding
+              <Link> doesn't also fire. */}
+          <div className="absolute top-2 right-2">
+            <ShortlistButton slug={profile.slug} variant="icon" />
+          </div>
+        </div>
+        <div className="flex flex-1 flex-col gap-3 p-4">
+          <div>
+            <h3 className="truncate text-base font-medium text-neutral-100">
+              {profile.displayName}
+            </h3>
+            {profile.headline && (
+              <p className="mt-0.5 truncate text-sm text-neutral-400">
+                {profile.headline}
+              </p>
+            )}
+            {(profile.city || primaryRole) && (
+              <div className="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs text-neutral-500">
+                {profile.city && (
+                  <span className="inline-flex items-center gap-1">
+                    <MapPin size={11} />
+                    {profile.city}
+                  </span>
+                )}
+                {profile.city && primaryRole && (
+                  <span className="text-neutral-700">·</span>
+                )}
+                {primaryRole && <span>{primaryRole}</span>}
+              </div>
+            )}
+          </div>
+          {profile.roles.length > 1 && (
+            <div className="mt-auto flex flex-wrap gap-1">
+              {profile.roles.slice(1, 4).map((role) => (
+                <span
+                  key={role}
+                  className="rounded-full border border-neutral-800 bg-neutral-900 px-2 py-0.5 text-[10px] text-neutral-400"
+                >
+                  {role}
+                </span>
+              ))}
+              {profile.roles.length > 4 && (
+                <span className="rounded-full border border-neutral-800 bg-neutral-900 px-2 py-0.5 text-[10px] text-neutral-500">
+                  +{profile.roles.length - 4}
                 </span>
               )}
-              {profile.city && primaryRole && (
-                <span className="text-neutral-700">·</span>
-              )}
-              {primaryRole && <span>{primaryRole}</span>}
             </div>
           )}
         </div>
-        {profile.roles.length > 1 && (
-          <div className="mt-auto flex flex-wrap gap-1">
-            {profile.roles.slice(1, 4).map((role) => (
-              <span
-                key={role}
-                className="rounded-full border border-neutral-800 bg-neutral-900 px-2 py-0.5 text-[10px] text-neutral-400"
-              >
-                {role}
-              </span>
-            ))}
-            {profile.roles.length > 4 && (
-              <span className="rounded-full border border-neutral-800 bg-neutral-900 px-2 py-0.5 text-[10px] text-neutral-500">
-                +{profile.roles.length - 4}
-              </span>
-            )}
-          </div>
-        )}
-      </div>
-    </Link>
+      </Link>
+    </motion.div>
   );
 }
 

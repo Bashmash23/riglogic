@@ -9,12 +9,18 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { motion } from "framer-motion";
 import { Printer, Trash2, ArrowRight, BookmarkX } from "lucide-react";
 import { toast } from "sonner";
 import { useShortlist } from "@/lib/crewShortlist";
 import { confirm } from "@/components/ConfirmDialog";
 import type { CrewProfilePublic } from "@/lib/crewTypes";
 import { CrewCard } from "../components/CrewCard";
+
+const gridVariants = {
+  hidden: {},
+  visible: { transition: { staggerChildren: 0.04 } },
+};
 
 export function ShortlistClient() {
   const { slugs, clear, mounted } = useShortlist();
@@ -142,11 +148,16 @@ export function ShortlistClient() {
       </div>
 
       {profiles.length > 0 && (
-        <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 print:grid-cols-2">
+        <motion.div
+          variants={gridVariants}
+          initial="hidden"
+          animate="visible"
+          className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 print:grid-cols-2"
+        >
           {profiles.map((p) => (
             <CrewCard key={p.id} profile={p} />
           ))}
-        </div>
+        </motion.div>
       )}
 
       {stale.length > 0 && (

@@ -26,6 +26,7 @@ import { AvailabilityCalendar } from "@/components/AvailabilityCalendar";
 import { PortfolioEmbed } from "@/components/PortfolioEmbed";
 import { SmartBackLink } from "@/components/SmartBackLink";
 import { ShortlistButton } from "../components/ShortlistButton";
+import { MotionHero } from "./MotionHero";
 import { shapeProfile } from "@/lib/crewQueries";
 import { prisma } from "@/lib/db";
 import { CREW_PREMIUM_GATE_ENABLED } from "@/lib/crewGate";
@@ -159,7 +160,9 @@ export default async function CrewProfilePage({
           </div>
         )}
 
-        {/* Hero */}
+        {/* Hero — wrapped in MotionHero for a subtle fade-up on
+            load so the page doesn't feel like it just appears. */}
+        <MotionHero>
         <section className="mt-6 grid grid-cols-1 gap-8 sm:grid-cols-[240px_1fr]">
           <div className="overflow-hidden rounded-xl border border-neutral-800 bg-neutral-900 aspect-square sm:aspect-auto">
             {profile.photoUrl ? (
@@ -215,6 +218,7 @@ export default async function CrewProfilePage({
             )}
           </div>
         </section>
+        </MotionHero>
 
         {/* Bio */}
         {profile.bio && (
