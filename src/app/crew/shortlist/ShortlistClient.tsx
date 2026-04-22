@@ -14,6 +14,7 @@ import { Printer, Trash2, ArrowRight, BookmarkX } from "lucide-react";
 import { toast } from "sonner";
 import { useShortlist } from "@/lib/crewShortlist";
 import { confirm } from "@/components/ConfirmDialog";
+import { CrewGridSkeleton } from "@/components/Skeleton";
 import type { CrewProfilePublic } from "@/lib/crewTypes";
 import { CrewCard } from "../components/CrewCard";
 
@@ -71,11 +72,9 @@ export function ShortlistClient() {
   const print = () => window.print();
 
   if (!mounted || loading) {
-    return (
-      <div className="rounded-lg border border-dashed border-neutral-800 px-6 py-20 text-center text-sm text-neutral-500">
-        Loading your shortlist…
-      </div>
-    );
+    // Render enough skeleton cards to fill one screenful so the
+    // transition from loading -> real data doesn't jump.
+    return <CrewGridSkeleton count={8} />;
   }
 
   if (slugs.length === 0) {
