@@ -63,7 +63,6 @@ export function HomeHero() {
         >
           The smart gear list for{" "}
           <KineticWord words={words} />
-          <span className="text-accent">.</span>
         </motion.h1>
 
         <motion.p
@@ -152,7 +151,10 @@ function KineticWord({ words }: { words: string[] }) {
           transition={{ duration: 0.35, ease: "easeOut" }}
           className="inline-block"
         >
-          {words[index]}
+          {/* Period is part of the animated span so it blur-fades
+              together with the word rather than popping in place
+              while the container width animates. */}
+          {words[index]}.
         </motion.span>
       </AnimatePresence>
     </motion.span>
