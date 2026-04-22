@@ -25,6 +25,8 @@ import type {
 import { AvailabilityCalendar } from "@/components/AvailabilityCalendar";
 import { CompletenessNudge } from "./CompletenessNudge";
 import { SmartBackLink } from "@/components/SmartBackLink";
+import { confirm } from "@/components/ConfirmDialog";
+import { toast } from "sonner";
 
 interface Props {
   initial: CrewProfileFull | null;
@@ -71,10 +73,8 @@ export function CrewProfileEditor({ initial }: Props) {
   );
   const [photoBusy, setPhotoBusy] = useState(false);
   const [cvBusy, setCvBusy] = useState(false);
-  const [uploadError, setUploadError] = useState<string | null>(null);
 
   const [saveState, setSaveState] = useState<SaveState>("idle");
-  const [saveMessage, setSaveMessage] = useState<string | null>(null);
 
   // Visibility toggle. Default: published. The current value is
   // sent on every save so flipping the switch and clicking Save
@@ -125,11 +125,16 @@ export function CrewProfileEditor({ initial }: Props) {
 
   // In-app back navigation guard — reused by the SmartBackLink at
   // the top of the form. Returning false cancels navigation.
-  const confirmLeaveIfDirty = useCallback(() => {
+  // Uses the styled Radix AlertDialog instead of window.confirm().
+  const confirmLeaveIfDirty = useCallback(async () => {
     if (!isDirty) return true;
-    return window.confirm(
-      "You have unsaved changes. Leave without saving?",
-    );
+    return await confirm({
+      title: "Leave without saving?",
+      description: "You have unsaved changes on your profile.",
+      confirmText: "Leave",
+      cancelText: "Keep editing",
+      variant: "danger",
+    });
   }, [isDirty]);
 
   // Tiny helper: wraps a setter call so the dirty flag flips true
@@ -147,7 +152,6 @@ export function CrewProfileEditor({ initial }: Props) {
   const saveProfile = async () => {
     if (!canSave) return;
     setSaveState("saving");
-    setSaveMessage(null);
     try {
       const res = await fetch("/api/crew/profile", {
         method: "PUT",
@@ -182,13 +186,15 @@ export function CrewProfileEditor({ initial }: Props) {
         setSaveState("error");
         if (data.error === "profanity_detected" && data.fields?.length) {
           const list = data.fields.join(", ");
-          setSaveMessage(
-            `Your ${list} contains language that isn't allowed. Please revise to keep the directory professional.`,
-          );
+          toast.error("Please revise flagged fields", {
+            description: `The following contain language that isn't allowed: ${list}.`,
+          });
         } else if (data.error === "invalid_input") {
-          setSaveMessage("Check the required fields.");
+          toast.error("Check the required fields");
         } else {
-          setSaveMessage("Couldn't save. Try again.");
+          toast.error("Couldn't save", {
+            description: "Try again in a moment.",
+          });
         }
         return;
       }
@@ -202,17 +208,20 @@ export function CrewProfileEditor({ initial }: Props) {
       // All current edits are persisted — clear the dirty flag so
       // the back/close guards stop nagging.
       setIsDirty(false);
-      setSaveMessage(
-        data.profile.isPublished
-          ? `Saved. Public at /crew/${data.profile.slug}`
-          : `Saved as hidden. Toggle visible to list on /crew.`,
+      toast.success(
+        data.profile.isPublished ? "Profile saved" : "Saved as hidden",
+        {
+          description: data.profile.isPublished
+            ? `Public at /crew/${data.profile.slug}`
+            : "Toggle visibility to list on /crew.",
+        },
       );
       // Refresh so the next edit reads from the updated DB row
       // (slug may have been generated on first save).
       router.refresh();
     } catch {
       setSaveState("error");
-      setSaveMessage("Network error. Try again.");
+      toast.error("Network error", { description: "Try again in a moment." });
     }
   };
 
@@ -222,7 +231,6 @@ export function CrewProfileEditor({ initial }: Props) {
     // upload before they've ever saved. After a successful upload
     // we set hasProfile=true so other UI affordances behave like
     // they would after a normal save.
-    setUploadError(null);
     if (kind === "photo") setPhotoBusy(true);
     else setCvBusy(true);
     try {
@@ -238,18 +246,21 @@ export function CrewProfileEditor({ initial }: Props) {
           error?: string;
           hint?: string;
         };
-        setUploadError(
+        const message =
           data.hint ??
-            {
-              blob_not_configured:
-                "File storage isn't set up yet — ask the admin.",
-              invalid_photo_type: "Photo must be an image file.",
-              photo_too_large: "Photo is too large (max 5MB).",
-              cv_must_be_pdf: "CV must be a PDF.",
-              cv_too_large: "CV is too large (max 10MB).",
-              no_profile_yet: "Save your profile once first.",
-            }[data.error ?? ""] ??
-            "Upload failed. Try again.",
+          {
+            blob_not_configured:
+              "File storage isn't set up yet — ask the admin.",
+            invalid_photo_type: "Photo must be an image file.",
+            photo_too_large: "Photo is too large (max 5MB).",
+            cv_must_be_pdf: "CV must be a PDF.",
+            cv_too_large: "CV is too large (max 10MB).",
+            no_profile_yet: "Save your profile once first.",
+          }[data.error ?? ""] ??
+          "Upload failed. Try again.";
+        toast.error(
+          kind === "photo" ? "Couldn't upload photo" : "Couldn't upload CV",
+          { description: message },
         );
         return;
       }
@@ -259,9 +270,13 @@ export function CrewProfileEditor({ initial }: Props) {
       };
       if (kind === "photo") {
         setPhotoUrl(data.url);
+        toast.success("Photo uploaded");
       } else {
         setCvUrl(data.url);
         setCvFileName(data.cvFileName ?? file.name);
+        toast.success("CV uploaded", {
+          description: data.cvFileName ?? file.name,
+        });
       }
       // The upload may have just created a hidden stub row.
       // Mirror the post-save state so the editor knows a profile
@@ -269,7 +284,7 @@ export function CrewProfileEditor({ initial }: Props) {
       // other "first save" UX in the future).
       setHasProfile(true);
     } catch {
-      setUploadError("Upload failed. Try again.");
+      toast.error("Upload failed", { description: "Try again in a moment." });
     } finally {
       if (kind === "photo") setPhotoBusy(false);
       else setCvBusy(false);
@@ -595,12 +610,6 @@ export function CrewProfileEditor({ initial }: Props) {
         />
       </Section>
 
-      {uploadError && (
-        <div className="rounded-md border border-red-900 bg-red-900/20 px-4 py-3 text-sm text-red-300">
-          {uploadError}
-        </div>
-      )}
-
       {/* Save bar — sticky so it's always reachable */}
       <div className="sticky bottom-4 z-10 flex flex-col gap-2 rounded-lg border border-neutral-800 bg-neutral-950/95 p-4 backdrop-blur">
         <div className="flex items-center justify-between gap-3">
@@ -629,15 +638,6 @@ export function CrewProfileEditor({ initial }: Props) {
             )}
           </button>
         </div>
-        {saveMessage && (
-          <p
-            className={`text-xs ${
-              saveState === "error" ? "text-red-300" : "text-neutral-400"
-            }`}
-          >
-            {saveMessage}
-          </p>
-        )}
       </div>
     </form>
   );

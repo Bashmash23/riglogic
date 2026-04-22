@@ -10,7 +10,9 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { Printer, Trash2, ArrowRight, BookmarkX } from "lucide-react";
+import { toast } from "sonner";
 import { useShortlist } from "@/lib/crewShortlist";
+import { confirm } from "@/components/ConfirmDialog";
 import type { CrewProfilePublic } from "@/lib/crewTypes";
 import { CrewCard } from "../components/CrewCard";
 
@@ -118,8 +120,18 @@ export function ShortlistClient() {
           </button>
           <button
             type="button"
-            onClick={() => {
-              if (confirm("Clear your whole shortlist?")) clear();
+            onClick={async () => {
+              const ok = await confirm({
+                title: "Clear your shortlist?",
+                description: `All ${profiles.length} saved ${profiles.length === 1 ? "profile" : "profiles"} will be removed from this device. This can't be undone.`,
+                confirmText: "Clear",
+                cancelText: "Keep",
+                variant: "danger",
+              });
+              if (ok) {
+                clear();
+                toast.success("Shortlist cleared");
+              }
             }}
             className="inline-flex items-center gap-1.5 rounded-md border border-neutral-800 bg-neutral-900 px-3 py-1.5 text-xs text-neutral-400 hover:border-red-900 hover:text-red-300"
           >
