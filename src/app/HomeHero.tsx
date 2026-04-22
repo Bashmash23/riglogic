@@ -7,7 +7,8 @@
 // the rest of the landing page still gets SEO-friendly HTML.
 
 import Link from "next/link";
-import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import { Show, SignInButton } from "@clerk/nextjs";
 import { ArrowRight } from "lucide-react";
 
@@ -120,31 +121,40 @@ export function HomeHero() {
   );
 }
 
-/** Cycles through words with a soft cross-fade — draws the eye
- *  without feeling like a slot machine. */
+/** Cycles through words with a soft blur cross-fade. The outer
+ *  motion.span has `layout` so its width animates to the size of
+ *  whichever word is currently visible — that way the full stop
+ *  after it sits flush to the word, not floating in the reserved
+ *  space of the longest variant. AnimatePresence with mode="wait"
+ *  plays the exit animation fully before the enter starts, which
+ *  avoids the overlapped-opacity wobble the old timeline had. */
 function KineticWord({ words }: { words: string[] }) {
+  const [index, setIndex] = useState(0);
+  useEffect(() => {
+    const id = setInterval(() => {
+      setIndex((i) => (i + 1) % words.length);
+    }, 2800);
+    return () => clearInterval(id);
+  }, [words.length]);
+
   return (
-    <span className="relative inline-block align-top">
-      <span className="invisible whitespace-nowrap">{words[0]}</span>
-      <span className="absolute inset-0 whitespace-nowrap">
-        {words.map((w, i) => (
-          <motion.span
-            key={w}
-            className="absolute inset-0 text-accent"
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: [0, 1, 1, 0], y: [12, 0, 0, -12] }}
-            transition={{
-              duration: words.length * 2.4,
-              delay: i * 2.4,
-              repeat: Infinity,
-              ease: "easeInOut",
-              times: [0, 0.08, 0.92 / words.length, 1 / words.length],
-            }}
-          >
-            {w}
-          </motion.span>
-        ))}
-      </span>
-    </span>
+    <motion.span
+      layout
+      transition={{ layout: { duration: 0.4, ease: "easeInOut" } }}
+      className="relative inline-flex whitespace-nowrap align-top text-accent"
+    >
+      <AnimatePresence mode="wait" initial={false}>
+        <motion.span
+          key={words[index]}
+          initial={{ opacity: 0, y: 20, filter: "blur(6px)" }}
+          animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
+          exit={{ opacity: 0, y: -20, filter: "blur(6px)" }}
+          transition={{ duration: 0.35, ease: "easeOut" }}
+          className="inline-block"
+        >
+          {words[index]}
+        </motion.span>
+      </AnimatePresence>
+    </motion.span>
   );
 }
