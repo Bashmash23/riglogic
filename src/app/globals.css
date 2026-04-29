@@ -1,10 +1,24 @@
 @import "tailwindcss";
 
+/*
+ * Design tokens — Persimmon brand system.
+ * The accent jumped from a muted cinema-orange (#E87722) to a
+ * brighter, more contemporary persimmon (#FF5A3C / oklch(.71 .21 35))
+ * matching the new mockups. Existing `text-accent` / `bg-accent` /
+ * `border-accent` Tailwind classes throughout the app keep working
+ * — they re-render with the new value automatically.
+ *
+ * New tinted variants (accent-tint-10, accent-tint-5, accent-border-30)
+ * exist for chip surfaces and the SmartMatch panel border.
+ */
 :root {
   --background: #0a0a0a;
   --foreground: #f5f5f5;
-  --accent: #e87722;
-  --accent-soft: #c86418;
+  --accent: #ff5a3c;
+  --accent-soft: #e0432a;
+  --accent-tint-10: rgb(255 90 60 / 0.1);
+  --accent-tint-5: rgb(255 90 60 / 0.05);
+  --accent-border-30: rgb(255 90 60 / 0.3);
   --muted: #a3a3a3;
   --border: #262626;
   --surface: #111111;
@@ -16,6 +30,9 @@
   --color-foreground: var(--foreground);
   --color-accent: var(--accent);
   --color-accent-soft: var(--accent-soft);
+  --color-accent-tint-10: var(--accent-tint-10);
+  --color-accent-tint-5: var(--accent-tint-5);
+  --color-accent-border-30: var(--accent-border-30);
   --color-muted: var(--muted);
   --color-border: var(--border);
   --color-surface: var(--surface);
