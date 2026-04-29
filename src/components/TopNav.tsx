@@ -6,6 +6,7 @@ import { Show, SignInButton, UserButton } from "@clerk/nextjs";
 import { UserCircle2 } from "lucide-react";
 import { ShortlistNavLink } from "./ShortlistNavLink";
 import { CommandPaletteButton } from "./CommandPalette";
+import { Button } from "./ui/Button";
 
 // Shared app-wide nav. Used on /, /builder, /crew so a user can always
 // jump anywhere in one click. "Projects" is an anchor on the home page —
@@ -74,9 +75,9 @@ export function TopNav() {
         <ShortlistNavLink />
         <Show when="signed-out">
           <SignInButton mode="modal">
-            <button className="text-sm text-neutral-300 hover:text-neutral-100">
+            <Button variant="ghost" size="sm">
               Sign in
-            </button>
+            </Button>
           </SignInButton>
         </Show>
         <Show when="signed-in">
@@ -85,19 +86,23 @@ export function TopNav() {
               a one-click path back to "edit my profile". The
               UserButton dropdown below also has a custom menu item
               for the same destination. */}
-          <Link
-            href="/crew/me"
-            className="hidden items-center gap-1.5 rounded-md border border-neutral-800 bg-neutral-900 px-3 py-1.5 text-sm text-neutral-300 hover:border-neutral-700 hover:text-neutral-100 transition-colors sm:inline-flex"
+          <Button
+            variant="secondary"
+            size="sm"
+            leadingIcon={<UserCircle2 size={14} />}
+            asChild
+            className="hidden sm:inline-flex"
           >
-            <UserCircle2 size={14} />
-            My profile
-          </Link>
-          <Link
-            href="/builder"
-            className="hidden rounded-md bg-accent px-3 py-1.5 text-sm font-medium text-neutral-950 hover:bg-accent-soft transition-colors sm:inline-block"
+            <Link href="/crew/me">My profile</Link>
+          </Button>
+          <Button
+            variant="primary"
+            size="sm"
+            asChild
+            className="hidden sm:inline-flex"
           >
-            Open builder
-          </Link>
+            <Link href="/builder">Open builder</Link>
+          </Button>
           <UserButton>
             <UserButton.MenuItems>
               <UserButton.Link

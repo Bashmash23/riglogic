@@ -83,21 +83,27 @@ export function ConfirmDialogHost() {
             </AlertDialog.Description>
           )}
           <div className="mt-6 flex justify-end gap-2">
-            <AlertDialog.Cancel
-              onClick={() => close(false)}
-              className="rounded-md border border-neutral-800 bg-neutral-900 px-4 py-2 text-sm text-neutral-200 hover:border-neutral-700"
-            >
-              {state?.cancelText ?? "Cancel"}
+            <AlertDialog.Cancel asChild>
+              <button
+                onClick={() => close(false)}
+                type="button"
+                className="inline-flex h-10 items-center justify-center rounded-md border border-neutral-800 bg-neutral-900/60 px-4 text-sm text-neutral-100 hover:border-neutral-700 hover:bg-neutral-900 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-950"
+              >
+                {state?.cancelText ?? "Cancel"}
+              </button>
             </AlertDialog.Cancel>
-            <AlertDialog.Action
-              onClick={() => close(true)}
-              className={`rounded-md px-4 py-2 text-sm font-medium transition-colors ${
-                variant === "danger"
-                  ? "bg-red-500 text-white hover:bg-red-400"
-                  : "bg-accent text-neutral-950 hover:bg-accent-soft"
-              }`}
-            >
-              {state?.confirmText ?? "Confirm"}
+            <AlertDialog.Action asChild>
+              <button
+                onClick={() => close(true)}
+                type="button"
+                className={`inline-flex h-10 items-center justify-center rounded-md px-4 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-950 ${
+                  variant === "danger"
+                    ? "bg-red-500 text-white hover:bg-red-400 focus-visible:ring-red-400"
+                    : "bg-accent text-neutral-950 hover:bg-accent-soft focus-visible:ring-accent"
+                }`}
+              >
+                {state?.confirmText ?? "Confirm"}
+              </button>
             </AlertDialog.Action>
           </div>
         </AlertDialog.Content>

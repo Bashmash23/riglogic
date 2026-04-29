@@ -26,6 +26,7 @@ import { AvailabilityCalendar } from "@/components/AvailabilityCalendar";
 import { CompletenessNudge } from "./CompletenessNudge";
 import { SmartBackLink } from "@/components/SmartBackLink";
 import { confirm } from "@/components/ConfirmDialog";
+import { Button } from "@/components/ui/Button";
 import { toast } from "sonner";
 
 interface Props {
@@ -618,25 +619,21 @@ export function CrewProfileEditor({ initial }: Props) {
               ? "Changes go live on /crew as soon as you save."
               : "Save once to publish your profile. You can keep editing afterwards."}
           </div>
-          <button
+          <Button
             type="submit"
+            variant="primary"
             disabled={!canSave}
-            className="inline-flex items-center gap-1.5 rounded-md bg-accent px-4 py-2 text-sm font-medium text-neutral-950 hover:bg-accent-soft disabled:opacity-60"
+            loading={saveState === "saving"}
+            leadingIcon={
+              saveState === "saved" ? <Check size={14} /> : undefined
+            }
           >
-            {saveState === "saving" ? (
-              <>
-                <Loader2 size={14} className="animate-spin" />
-                Saving
-              </>
-            ) : saveState === "saved" ? (
-              <>
-                <Check size={14} />
-                Saved
-              </>
-            ) : (
-              "Save profile"
-            )}
-          </button>
+            {saveState === "saving"
+              ? "Saving"
+              : saveState === "saved"
+                ? "Saved"
+                : "Save profile"}
+          </Button>
         </div>
       </div>
     </form>
