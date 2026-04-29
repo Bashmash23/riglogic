@@ -22,7 +22,10 @@ export default function Home() {
       </Show>
 
       {/* Three-step pitch */}
-      <section className="border-t border-neutral-800 bg-neutral-950/50 px-6 py-16">
+      <section
+        id="how-it-works"
+        className="scroll-mt-20 border-t border-neutral-800 bg-neutral-950/50 px-6 py-16"
+      >
         <div className="mx-auto max-w-5xl">
           <h2 className="text-xs font-semibold uppercase tracking-wider text-accent">
             How it works
